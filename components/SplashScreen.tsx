@@ -46,9 +46,9 @@ export default function SplashScreen() {
             className="relative z-[101] flex flex-col items-center"
           >
             <div className="bg-blue-600 p-4 rounded-2xl shadow-2xl mb-4">
-              <ShoppingBag size={48} className="text-white" />
+              <ShoppingBag size={70} className="text-white" />
             </div>
-            <h2 className="text-white text-2xl font-bold tracking-tighter">
+            <h2 className="text-white text-5xl font-bold tracking-tighter">
               PETTI BEVERAGE
             </h2>
             <p className="text-blue-400 text-xs tracking-[0.3em] uppercase mt-2">

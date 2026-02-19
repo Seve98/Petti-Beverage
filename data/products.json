@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "name": "Heineken Cassa 24x33cl",
+    "category": "Birre",
+    "price": "22.50",
+    "image": "/products/Heineken.png",
+    "isNew": false,
+    "isPromo": true
+  },
+  {
+    "id": "2",
+    "name": "Acqua Panna Vetro 1L",
+    "category": "Acque",
+    "price": "0.95",
+    "image": "/products/acquapanna.png",
+    "isNew": false,
+    "isPromo": false
+  },
+  {
+    "id": "3",
+    "name": "Coca Cola Original 33cl",
+    "category": "Soft Drinks",
+    "price": "1.20",
+    "image": "/products/cocacola.png",
+    "isNew": true,
+    "isPromo": false
+  },
+  {
+    "id": "4",
+    "name": "Moët & Chandon Imperial",
+    "category": "Vini",
+    "price": "48.00",
+    "image": "/products/moet.png",
+    "isNew": true,
+    "isPromo": false
+  },
+  {
+    "id": "5",
+    "name": "Birra Ichnusa Non Filtrata",
+    "category": "Birre",
+    "price": "1.45",
+    "image": "/products/ichnusa.jpg",
+    "isNew": true,
+    "isPromo": true
+  },
+   {
+    "id": "6",
+    "name": "Aglianico Vino Rosso",
+    "category": "Vini",
+    "price": "10,00",
+    "image": "/products/vinorosso.webp",
+    "isNew": true,
+    "isPromo": true
+  }
+]

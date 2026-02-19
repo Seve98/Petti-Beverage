@@ -6,6 +6,7 @@ import CartSidebar from "@/components/CartSidebar";
 import { CartProvider } from "@/context/CartContext";
 import { ToastContainer } from "react-toastify"; // Importa il contenitore
 import "react-toastify/dist/ReactToastify.css"; // Importa gli stili base
+import Footer from "./Footer";
 
 export default function LayoutClientWrapper({
   children,
@@ -32,6 +33,7 @@ export default function LayoutClientWrapper({
           pauseOnHover
           theme="light"
         />
+        <Footer />
       </CartProvider>
     </>
   );
