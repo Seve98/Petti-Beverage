@@ -19,16 +19,16 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
   ];
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+    <nav className="fixed top-0 w-full z-50 bg-white backdrop-blur-md border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
         {/* LOGO */}
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="bg-blue-600 p-1.5 rounded-lg group-hover:rotate-3 transition-transform">
+          {/* <div className="bg-blue-600 p-1.5 rounded-lg group-hover:rotate-3 transition-transform">
             <span className="text-white font-black text-xl">P</span>
-          </div>
+          </div> */}
           <div className="flex flex-col">
             <span className="text-slate-900 font-bold leading-none tracking-tight">
-              PETTI PIETRO
+              PETTI BEVERAGE
             </span>
             <span className="text-[10px] text-blue-600 font-bold uppercase tracking-[0.2em]">
               Distribuzione

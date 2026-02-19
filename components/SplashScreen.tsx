@@ -49,7 +49,7 @@ export default function SplashScreen() {
               <ShoppingBag size={48} className="text-white" />
             </div>
             <h2 className="text-white text-2xl font-bold tracking-tighter">
-              PETTI PIETRO
+              PETTI BEVERAGE
             </h2>
             <p className="text-blue-400 text-xs tracking-[0.3em] uppercase mt-2">
               Dal 1960

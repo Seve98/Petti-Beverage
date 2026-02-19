@@ -41,7 +41,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-slate-50 flex ">
       {/* Sidebar Admin (Finta) */}
       <aside className="w-64 bg-slate-900 text-slate-300 p-6 hidden md:block">
         <div className="mb-10 flex items-center gap-2 text-white font-bold">
@@ -62,11 +62,11 @@ export default function AdminDashboard() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-8 pt-24 pb-10">
         <header className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-2xl font-bold text-slate-900">
-              Bentornato, Petti Pietro
+              Bentornato Admin
             </h1>
             <p className="text-slate-500 text-sm">
               Ecco cosa sta succedendo nel tuo ingrosso oggi.
