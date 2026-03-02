@@ -3,29 +3,20 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { toast } from "react-toastify";
 import { ShoppingCart } from "lucide-react";
+import { Product } from "@/types/product"; // Importiamo il tipo globale
 
-// 1. Definiamo il tipo Prodotto (coerente con il tuo JSON)
-export interface Product {
-  id: string; // Nel JSON l'id è tra virgolette "1"
-  name: string;
-  category: string;
-  price: string; // Nel JSON è stringa "22.50"
-  image: string;
-  isNew: boolean;
-  isPromo: boolean;
-}
-
-// 2. Definiamo l'oggetto nel carrello (qui convertiamo i dati per i calcoli)
 export interface CartItem {
-  id: string; // Deve essere stringa come l'originale
+  id: string;
   name: string;
-  price: number; // Diventa numero per fare totalPrice
+  price: number;
   quantity: number;
-  image: string;
+  image: string | null;
 }
 
 interface CartContextType {
   cart: CartItem[];
+  isCartOpen: boolean; // Aggiunto per gestire l'apertura automatica
+  setIsCartOpen: (open: boolean) => void;
   addToCart: (product: Product) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, delta: number) => void;
@@ -36,6 +27,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -49,20 +41,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
         );
       }
 
-      // IMPORTANTE: Convertiamo il prezzo da stringa a numero qui
       return [
         ...prevCart,
         {
           id: product.id,
-          name: product.name,
-          price: parseFloat(product.price), // Da "22.50" a 22.50
-          image: product.image,
+          name: product.nome, // Usiamo 'nome' dal tipo Product
+          price: product.prezzo, // Usiamo 'prezzo' (già numero)
+          image: product.immagine_url, // Usiamo 'immagine_url'
           quantity: 1,
         },
       ];
     });
 
-    toast.success(`${product.name} aggiunto!`, {
+    // Apriamo la sidebar per dare feedback immediato
+    setIsCartOpen(true);
+
+    toast.success(`${product.nome} aggiunto!`, {
       position: "bottom-right",
       autoClose: 2000,
       icon: <ShoppingCart size={20} />,
@@ -90,7 +84,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, updateQuantity, totalPrice }}
+      value={{
+        cart,
+        isCartOpen,
+        setIsCartOpen,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        totalPrice,
+      }}
     >
       {children}
     </CartContext.Provider>

@@ -1,87 +1,196 @@
 "use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-// 1. Importiamo i dati dal JSON e il componente card
-import productsData from "@/data/products.json";
-import ProductCard from "@/components/ProductCard";
-import { Product } from "@/context/CartContext";
 
-// Tipizziamo i dati per TypeScript
-const products = productsData as Product[];
-const categories = ["Tutti", "Birre", "Acque", "Vini", "Soft Drinks"];
+import React, { useState, useEffect, useMemo } from "react";
+import { getProducts } from "@/lib/api-products";
+import ProductCard from "@/components/ProductCard";
+import { Product } from "@/types/product";
+import { SlidersHorizontal, X } from "lucide-react"; // Per un'icona filtri
 
 export default function CatalogoPage() {
-  const [filter, setFilter] = useState("Tutti");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredProducts =
-    filter === "Tutti"
-      ? products
-      : products.filter((p) => p.category === filter);
+  // Stato unico per tutti i filtri
+  const [filters, setFilters] = useState({
+    categoria: "Tutti",
+    formato: "Tutti",
+    prezzo: "Tutti", // "economico", "premium", "luxury"
+  });
+
+  useEffect(() => {
+    async function load() {
+      const data = await getProducts();
+      setProducts(data);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  // Logica di filtraggio combinata (useMemo ottimizza le prestazioni)
+  const filtered = useMemo(() => {
+    return products.filter((p) => {
+      const matchCategoria =
+        filters.categoria === "Tutti" || p.categoria === filters.categoria;
+      const matchFormato =
+        filters.formato === "Tutti" || p.formato === filters.formato;
+
+      let matchPrezzo = true;
+      if (filters.prezzo === "Sotto 25€") matchPrezzo = p.prezzo < 25;
+      if (filters.prezzo === "25€ - 50€")
+        matchPrezzo = p.prezzo >= 25 && p.prezzo <= 50;
+      if (filters.prezzo === "Oltre 50€") matchPrezzo = p.prezzo > 50;
+
+      return matchCategoria && matchFormato && matchPrezzo;
+    });
+  }, [products, filters]);
+
+  // Estrazione dinamica delle opzioni dai dati reali
+  const categorie = [
+    "Tutti",
+    ...Array.from(new Set(products.map((p) => p.categoria))),
+  ];
+  const formati = [
+    "Tutti",
+    ...Array.from(new Set(products.map((p) => p.formato).filter(Boolean))),
+  ];
+  const fascePrezzo = ["Tutti", "Sotto 25€", "25€ - 50€", "Oltre 50€"];
+
+  if (loading)
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center text-gold">
+        Caricamento...
+      </div>
+    );
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-32">
-      {" "}
-      {/* Aumentato il pt per la Navbar */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Intestazione */}
-        <div className="mb-12 text-center md:text-left">
-          <h1 className="text-5xl font-jakarta font-black mb-4 text-slate-900">
-            Il Nostro Catalogo
+    <main className="min-h-screen bg-black pt-32 pb-20 px-4 md:px-8 text-white">
+      <div className="max-w-7xl mx-auto">
+        <header className="mb-16 text-center">
+          <h1 className="text-5xl md:text-7xl font-serif gold-gradient uppercase mb-6">
+            La Cantina
           </h1>
-          <p className="text-slate-500 font-inter text-lg max-w-2xl">
-            Esplora la nostra selezione premium di bevande per il tuo business.
-            Qualità garantita e consegna rapida.
+          <p className="text-gold/40 uppercase tracking-[0.3em] text-xs">
+            Selezione esclusiva Petti Beverage
+          </p>
+        </header>
+
+        {/* SEZIONE FILTRI AVANZATA */}
+        <div className="bg-[#0a0a0a] border border-gold/10 rounded-2xl p-6 md:p-8 mb-12 shadow-2xl">
+          <div className="flex items-center gap-2 mb-8 border-b border-gold/10 pb-4">
+            <SlidersHorizontal size={18} className="text-gold" />
+            <h2 className="text-gold uppercase tracking-widest text-xs font-bold">
+              Affina la ricerca
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {/* Filtro Categoria */}
+            <div>
+              <label className="text-[10px] text-gray-500 uppercase tracking-widest mb-4 block font-bold">
+                Categoria
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {categorie.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setFilters({ ...filters, categoria: cat })}
+                    className={`px-3 py-1.5 rounded-md text-[10px] uppercase transition-all border ${
+                      filters.categoria === cat
+                        ? "bg-gold text-black border-gold"
+                        : "bg-transparent text-gray-400 border-white/10 hover:border-gold/30"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Filtro Formato */}
+            <div>
+              <label className="text-[10px] text-gray-500 uppercase tracking-widest mb-4 block font-bold">
+                Formato Bottiglia
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {formati.map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setFilters({ ...filters, formato: f })}
+                    className={`px-3 py-1.5 rounded-md text-[10px] uppercase transition-all border ${
+                      filters.formato === f
+                        ? "bg-gold text-black border-gold"
+                        : "bg-transparent text-gray-400 border-white/10 hover:border-gold/30"
+                    }`}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Filtro Prezzo */}
+            <div>
+              <label className="text-[10px] text-gray-500 uppercase tracking-widest mb-4 block font-bold">
+                Fascia di Prezzo
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {fascePrezzo.map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setFilters({ ...filters, prezzo: p })}
+                    className={`px-3 py-1.5 rounded-md text-[10px] uppercase transition-all border ${
+                      filters.prezzo === p
+                        ? "bg-gold text-black border-gold"
+                        : "bg-transparent text-gray-400 border-white/10 hover:border-gold/30"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Reset Filtri */}
+          {(filters.categoria !== "Tutti" ||
+            filters.formato !== "Tutti" ||
+            filters.prezzo !== "Tutti") && (
+            <button
+              onClick={() =>
+                setFilters({
+                  categoria: "Tutti",
+                  formato: "Tutti",
+                  prezzo: "Tutti",
+                })
+              }
+              className="mt-8 text-[9px] text-gold uppercase tracking-widest flex items-center gap-2 hover:text-white transition-colors"
+            >
+              <X size={12} /> Rimuovi tutti i filtri
+            </button>
+          )}
+        </div>
+
+        {/* Risultati */}
+        <div className="mb-10 flex justify-between items-end border-b border-gold/5 pb-4">
+          <p className="text-gold/40 text-[10px] uppercase tracking-widest">
+            {filtered.length} Risultati trovati
           </p>
         </div>
 
-        {/* Filtri - Resi più eleganti */}
-        <div className="flex flex-wrap gap-3 mb-16 justify-center md:justify-start">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-8 py-3 rounded-full font-jakarta font-bold text-sm transition-all duration-300 ${
-                filter === cat
-                  ? "bg-blue-600 text-white shadow-xl shadow-blue-200 scale-105"
-                  : "bg-white text-slate-500 hover:bg-slate-100 border border-slate-200"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Griglia Prodotti - Ora usa ProductCard */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredProducts.map((product) => (
-              <motion.div
-                key={product.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4, ease: "circOut" }}
-              >
-                {/* Usiamo il componente centralizzato */}
-                <ProductCard product={product} />
-              </motion.div>
+        {filtered.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16">
+            {filtered.map((product) => (
+              <ProductCard key={product.id} prodotto={product} />
             ))}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Stato Vuoto: se non ci sono prodotti in una categoria */}
-        {filteredProducts.length === 0 && (
-          <div className="py-20 text-center">
-            <p className="text-slate-400 font-jakarta italic">
-              Nessun prodotto trovato in questa categoria.
+          </div>
+        ) : (
+          <div className="py-40 text-center border border-gold/10 rounded-3xl bg-white/[0.02]">
+            <p className="text-gold/40 italic font-serif text-xl">
+              Nessun prodotto corrisponde ai criteri selezionati.
             </p>
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }
