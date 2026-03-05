@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { toast } from "react-toastify";
 import { ShoppingCart } from "lucide-react";
-import { Product } from "@/types/product"; // Importiamo il tipo globale
+import { Product } from "@/types/product";
 
 export interface CartItem {
   id: string;
@@ -15,11 +15,12 @@ export interface CartItem {
 
 interface CartContextType {
   cart: CartItem[];
-  isCartOpen: boolean; // Aggiunto per gestire l'apertura automatica
+  isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
   addToCart: (product: Product) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, delta: number) => void;
+  clearCart: () => void; // <--- AGGIUNTO
   totalPrice: number;
 }
 
@@ -45,15 +46,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
         ...prevCart,
         {
           id: product.id,
-          name: product.nome, // Usiamo 'nome' dal tipo Product
-          price: product.prezzo, // Usiamo 'prezzo' (già numero)
-          image: product.immagine_url, // Usiamo 'immagine_url'
+          name: product.nome,
+          price: product.prezzo,
+          image: product.immagine_url,
           quantity: 1,
         },
       ];
     });
 
-    // Apriamo la sidebar per dare feedback immediato
     setIsCartOpen(true);
 
     toast.success(`${product.nome} aggiunto!`, {
@@ -77,6 +77,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  // --- AGGIUNTO: FUNZIONE PER SVUOTARE IL CARRELLO ---
+  const clearCart = () => {
+    setCart([]);
+  };
+
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0,
@@ -91,6 +96,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addToCart,
         removeFromCart,
         updateQuantity,
+        clearCart, // <--- ESPORRE LA FUNZIONE
         totalPrice,
       }}
     >
