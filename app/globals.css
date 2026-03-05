@@ -1,35 +1,84 @@
 @import "tailwindcss";
 @plugin "daisyui";
-@tailwind utilities;
+
+@theme {
+  /* Definiamo i tuoi colori "Petti" */
+  --color-black: #0A0A0A;
+  --color-gold: #D4AF37;
+  --color-gold-light: #FCF6BA;
+  --color-clay: #1A1A1A;
+
+  /* Definiamo i font */
+  --font-serif: "Playfair Display", serif;
+}
 
 :root {
-  --font-inter: 'Inter', sans-serif;
-  --font-jakarta: 'Plus Jakarta Sans', sans-serif;
-}
-/* Nel tuo globals.css */
-body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-@layer base {
-  body {
-    /* Usiamo la variabile invece della classe Tailwind */
-    font-family: var(--font-inter);
-    @apply bg-white text-slate-900 antialiased;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    /* Usiamo la variabile invece della classe Tailwind */
-    font-family: var(--font-jakarta);
-    @apply tracking-tight font-bold;
-  }
+  background-color: var(--color-black);
+  color: white;
 }
 
-@layer components {
-  .btn-primary {
-    /* Se vuoi usare Jakarta qui, usa la variabile */
-    font-family: var(--font-jakarta);
-    @apply bg-blue-600 text-white px-6 py-3 rounded-xl font-bold 
-           transition-all hover:bg-blue-700 active:scale-95 shadow-lg shadow-blue-500/20;
+/* --- UTILITIES --- */
+
+@utility gold-gradient {
+  background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728);
+  background-clip: text;
+  color: transparent;
+}
+
+@utility border-gold {
+  border-color: var(--color-gold);
+}
+
+@utility btn-custom {
+  background: var(--color-gold);
+  color: var(--color-black);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  transition: all 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
   }
+}
+
+@utility input-petti {
+  background-color: black;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  color: white;
+  outline: none;
+  transition: all 0.2s;
+
+  &:focus {
+    border-color: var(--color-gold);
+  }
+}
+
+@utility textarea-petti {
+  background-color: black;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  color: white;
+  outline: none;
+  min-height: 6rem;
+  transition: all 0.2s;
+
+  &:focus {
+    border-color: var(--color-gold);
+  }
+}
+
+@utility select-petti {
+  background-color: black;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  color: white;
+  outline: none;
 }

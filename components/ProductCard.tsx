@@ -1,70 +1,78 @@
-"use client";
+"use client"; // Necessario per gestire il click e il context
 
-import { Plus } from "lucide-react";
-import { useCart, Product } from "@/context/CartContext";
 import Image from "next/image";
+import Link from "next/link";
+import { ShoppingCart } from "lucide-react"; // Icona più pulita
+import { Product } from "@/types/product";
+import { useCart } from "@/context/CartContext";
 
-export default function ProductCard({ product }: { product: Product }) {
-  const { addToCart } = useCart();
+export default function ProductCard({ prodotto }: { prodotto: Product }) {
+  const { addToCart, setIsCartOpen } = useCart();
 
-  // Convertiamo il prezzo in numero per le operazioni grafiche (sconto e decimali)
-  const numericPrice = parseFloat(product.price);
+  // Funzione per aggiungere al carrello senza attivare il Link della card
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault(); // Impedisce la navigazione alla pagina prodotto
+    e.stopPropagation(); // Evita conflitti di eventi
+    addToCart(prodotto);
+    setIsCartOpen(true); // Opzionale: apre la sidebar per feedback immediato
+  };
 
   return (
-    <div className="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
-      {/* Immagine */}
-      <div className="relative aspect-[4/5] bg-slate-50 p-4">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
-          // Convertiamo l'id in numero solo per il controllo priority
-          priority={parseInt(product.id) <= 4}
-        />
-
-        {/* Badge dinamici */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          <span className="bg-white/90 backdrop-blur-sm text-[10px] font-bold px-2 py-1 rounded border border-slate-100 uppercase tracking-wider text-slate-600">
-            {product.category}
-          </span>
-          {product.isNew && (
-            <span className="bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-              Nuovo
-            </span>
-          )}
+    <Link
+      href={`../products/${prodotto.slug}`}
+      className="group relative flex flex-col bg-[#111] border border-gold/10 rounded-2xl overflow-hidden transition-all duration-500 hover:border-gold/40"
+    >
+      {/* BADGE FORMATO */}
+      {prodotto.formato && (
+        <div className="absolute top-3 right-3 z-30">
+          <div className="px-2 py-1 bg-black/60 backdrop-blur-md border border-gold/30 rounded-md">
+            <p className="text-[10px] font-bold text-gold uppercase tracking-widest">
+              {prodotto.formato}
+            </p>
+          </div>
         </div>
+      )}
+
+      {/* Contenitore Immagine */}
+      <div className="relative aspect-3/4 w-full overflow-hidden bg-[#1a1a1a]">
+        {prodotto.immagine_url ? (
+          <Image
+            src={prodotto.immagine_url}
+            alt={prodotto.nome}
+            fill
+            className="object-contain p-4 transition-transform duration-700 group-hover:scale-110"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gold/20 text-xs">
+            NO IMAGE
+          </div>
+        )}
       </div>
 
-      {/* Dettagli */}
-      <div className="p-4">
-        <h3 className="text-slate-800 font-jakarta font-bold truncate">
-          {product.name}
+      {/* Info Prodotto */}
+      <div className="p-5 flex flex-col flex-1">
+        <span className="text-[9px] text-gold/60 uppercase tracking-[0.3em] mb-1">
+          {prodotto.categoria}
+        </span>
+        <h3 className="text-white font-serif text-sm md:text-base font-bold uppercase line-clamp-2 min-h-12">
+          {prodotto.nome}
         </h3>
 
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex flex-col">
-            {/* Mostriamo il prezzo barrato solo se è in promo */}
-            {product.isPromo && (
-              <span className="text-xs text-slate-400 line-through">
-                €{(numericPrice * 1.2).toFixed(2)}
-              </span>
-            )}
-            <span className="text-lg font-black text-slate-900 font-jakarta">
-              €{numericPrice.toFixed(2)}
-            </span>
-          </div>
+        <div className="mt-auto pt-4 flex justify-between items-center">
+          <span className="text-lg font-mono text-gold font-bold">
+            €{Number(prodotto.prezzo).toFixed(2)}
+          </span>
 
+          {/* BOTTONE AGGIUNGI AL CARRELLO */}
           <button
-            onClick={() => addToCart(product)}
-            className="bg-slate-900 text-white p-2.5 rounded-lg hover:bg-blue-600 transition-colors active:scale-95 shadow-sm"
-            aria-label="Aggiungi al carrello"
+            onClick={handleAddToCart}
+            className="h-10 w-10 rounded-full border border-gold/20 flex items-center justify-center bg-black/40 text-gold transition-all duration-300 hover:bg-gold hover:text-black hover:cursor-pointer hover:scale-110 z-40"
+            title="Aggiungi al carrello"
           >
-            <Plus size={20} />
+            <ShoppingCart size={18} className="" />
           </button>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

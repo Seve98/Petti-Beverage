@@ -1,74 +1,120 @@
 "use client";
-import { X, ImageIcon, Save } from "lucide-react";
+import { upsertProduct } from "@/app/action/admin-action";
 
-interface ModalProps {
+export default function AddProductModal({
+  isOpen,
+  onClose,
+}: {
   isOpen: boolean;
   onClose: () => void;
-}
-
-export default function AddProductModal({ isOpen, onClose }: ModalProps) {
+}) {
   if (!isOpen) return null;
 
+  async function handleAction(formData: FormData) {
+    const result = await upsertProduct(formData);
+    if (result.success) {
+      onClose();
+      // Qui potresti aggiungere un toast invece di un alert per un'esperienza più luxury
+    } else {
+      alert("Errore: " + result.error);
+    }
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+      <div className="bg-clay border border-gold/20 p-8 rounded-xl w-full max-w-lg shadow-2xl">
+        <h3 className="font-serif text-3xl gold-gradient mb-8 uppercase tracking-tighter">
+          Nuovo Prodotto di Elite
+        </h3>
 
-      <div className="relative bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in duration-200">
-        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-          <h2 className="text-xl font-bold text-slate-900">Nuovo Prodotto</h2>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-slate-600"
-          >
-            <X size={24} />
-          </button>
-        </div>
+        <form action={handleAction} className="flex flex-col gap-5">
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] text-gold uppercase tracking-widest ml-1 font-bold">
+              Nome Bottiglia
+            </label>
+            <input
+              name="nome"
+              type="text"
+              placeholder="Es. Grappa Riserva Petti"
+              className="input-petti"
+              required
+            />
+          </div>
 
-        <form className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
-              <label className="text-xs font-bold text-slate-500 uppercase">
-                Nome Prodotto
-              </label>
-              <input
-                type="text"
-                className="w-full p-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-bold text-slate-500 uppercase">
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] text-gold uppercase tracking-widest ml-1 font-bold">
                 Prezzo (€)
               </label>
               <input
+                name="prezzo"
                 type="number"
                 step="0.01"
-                className="w-full p-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+                className="input-petti"
+                required
               />
             </div>
-            <div>
-              <label className="text-xs font-bold text-slate-500 uppercase">
-                Categoria
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] text-gold uppercase tracking-widest ml-1 font-bold">
+                Stock
               </label>
-              <select className="w-full p-3 rounded-lg border border-slate-200 bg-white">
-                <option>Bevande</option>
-                <option>Vini</option>
-                <option>Alcolici</option>
-              </select>
+              <input
+                name="stock"
+                type="number"
+                className="input-petti"
+                required
+              />
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              alert("Salvato!");
-              onClose();
-            }}
-            className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all"
-          >
-            <Save size={20} /> Salva nel Database
-          </button>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] text-gold uppercase tracking-widest ml-1 font-bold">
+              Categoria
+            </label>
+            <select name="categoria" className="select-petti">
+              <option value="Whisky">Whisky</option>
+              <option value="Grappa">Grappa</option>
+              <option value="Gin">Gin</option>
+              <option value="Rum">Rum</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] text-gold uppercase tracking-widest ml-1 font-bold">
+              Descrizione
+            </label>
+            <textarea
+              name="descrizione"
+              className="textarea-petti"
+              placeholder="Note sensoriali..."
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] text-gold uppercase tracking-widest ml-1 font-bold">
+              Foto Bottiglia
+            </label>
+            {/* Input file stilizzato */}
+            <input
+              name="immagine"
+              type="file"
+              accept="image/*"
+              className="file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gold file:text-black hover:file:bg-gold-light cursor-pointer text-gray-500 text-sm"
+            />
+          </div>
+
+          <div className="flex gap-4 mt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 text-gray-400 hover:text-white transition-colors text-sm uppercase tracking-widest"
+            >
+              Annulla
+            </button>
+            <button type="submit" className="btn-custom flex-1">
+              Salva Prodotto
+            </button>
+          </div>
         </form>
       </div>
     </div>

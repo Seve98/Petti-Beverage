@@ -1,36 +1,62 @@
 import Hero from "@/components/Hero";
 import ProductCard from "@/components/ProductCard";
-import products from "@/data/products.json";
+import { getProducts } from "@/lib/api-products";
 import Link from "next/link";
 
-export default function Home() {
-  const newArrivals = products.filter((p) => p.isNew).slice(0, 4);
+export default async function Home() {
+  // Recuperiamo i prodotti più recenti
+  const products = await getProducts({
+    limit: 4,
+    orderBy: "creato_il",
+    ascending: false,
+  });
+
   return (
-    <main className="min-h-screen bg-slate-100">
+    <main className="min-h-screen bg-black overflow-x-hidden">
       <Hero />
-      <section className="py-20 bg-white">
+
+      <section className="py-24 bg-black relative">
+        {/* Decorazione di sfondo sottile */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-gold/30 to-transparent" />
+
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-between items-end mb-10">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
             <div>
-              <span className="text-blue-600 font-bold uppercase tracking-widest text-sm">
-                Novità
-              </span>
-              <h2 className="text-4xl font-jakarta font-black mt-2">
-                Ultimi Arrivi in Magazzino
+              <div className="flex items-center gap-2 mb-2">
+                <span className="h-px w-8 bg-gold" />
+                <span className="text-gold-light font-bold uppercase tracking-[0.3em] text-[10px]">
+                  Nuova Collezione
+                </span>
+              </div>
+              <h2 className="text-3xl md:text-5xl font-serif text-white font-bold italic">
+                Ultimi Arrivi <span className="text-gold">in Magazzino</span>
               </h2>
             </div>
+
             <Link
               href="/catalogo"
-              className="text-blue-600 font-bold hover:underline"
+              className="group flex items-center gap-2 text-gold text-xs uppercase tracking-widest font-bold hover:text-white transition-all duration-300"
             >
-              Vedi tutto →
+              <p>Esplora l&#8217; intera cantina</p>
+              <span className="group-hover:translate-x-1 transition-transform">
+                →
+              </span>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {newArrivals.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+          {/* Griglia Prodotti: 2 colonne su mobile, 4 su desktop */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+            {products && products.length > 0 ? (
+              products.map((product) => (
+                <ProductCard key={product.id} prodotto={product} />
+              ))
+            ) : (
+              <div className="col-span-full py-20 text-center">
+                <p className="text-gray-500 font-serif italic text-lg">
+                  Stiamo aggiornando le nostre riserve. Torna presto.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>

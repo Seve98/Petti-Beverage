@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
+import { ShoppingCart, Menu, X } from "lucide-react"; // ShoppingCart è più elegante per il lusso
 import { useCart } from "@/context/CartContext";
+import Image from "next/image";
 
-export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
-  const { cart } = useCart();
+export default function Navbar() {
+  const { cart, setIsCartOpen } = useCart(); // Usiamo lo stato globale
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -19,19 +20,23 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
   ];
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white backdrop-blur-md border-b border-slate-100">
+    <nav className="fixed top-0 w-full z-60 bg-black/80 backdrop-blur-lg border-b border-gold/10">
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
         {/* LOGO */}
-        <Link href="/" className="flex items-center gap-2 group">
-          {/* <div className="bg-blue-600 p-1.5 rounded-lg group-hover:rotate-3 transition-transform">
-            <span className="text-white font-black text-xl">P</span>
-          </div> */}
+        <Link href="/" className="flex items-center gap-3 group shrink-0">
+          <Image
+            src="/logo_petti.png"
+            alt="Logo Petti Beverage"
+            width={50}
+            height={50}
+            className="object-contain"
+          />
           <div className="flex flex-col">
-            <span className="text-slate-900 font-bold leading-none tracking-tight">
+            <span className="gold-gradient text-xl md:text-2xl font-black leading-none tracking-tighter uppercase">
               PETTI BEVERAGE
             </span>
-            <span className="text-[10px] text-blue-600 font-bold uppercase tracking-[0.2em]">
-              Distribuzione
+            <span className="text-[9px] text-gold/80 font-bold uppercase tracking-[0.3em] leading-tight">
+              Dal 1960
             </span>
           </div>
         </Link>
@@ -42,10 +47,10 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
             <Link
               key={link.name}
               href={link.href}
-              className={`text-sm font-semibold transition-colors ${
+              className={`text-[11px] uppercase tracking-[0.2em] font-bold transition-all duration-300 ${
                 link.highlight
-                  ? "text-red-500 hover:text-red-600"
-                  : "text-slate-600 hover:text-blue-600"
+                  ? "text-gold hover:text-white"
+                  : "text-gray-400 hover:text-gold"
               }`}
             >
               {link.name}
@@ -53,18 +58,17 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
           ))}
         </div>
 
-        {/* AZIONI: CARRELLO + MENU MOBILE */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <button
-            onClick={onCartClick}
-            className="relative p-2.5 bg-slate-100 rounded-full hover:bg-slate-200 transition-all active:scale-95 group"
+            onClick={() => setIsCartOpen(true)} // Apre la sidebar globalmente
+            className="relative p-3 rounded-full hover:bg-gold/10 transition-all active:scale-90 group"
           >
             <ShoppingCart
-              size={20}
-              className="text-slate-700 group-hover:text-blue-600"
+              size={22}
+              className="text-gold group-hover:scale-110 transition-transform"
             />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-white animate-in zoom-in">
+              <span className="absolute top-1 right-1 bg-gold text-black text-[9px] font-black h-5 w-5 flex items-center justify-center rounded-full border-2 border-black animate-in zoom-in duration-300">
                 {totalItems}
               </span>
             )}
@@ -72,33 +76,38 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
 
           {/* Hamburger Menu (Mobile) */}
           <button
-            className="md:hidden p-2 text-slate-600"
+            className="md:hidden p-3 text-gold"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
         </div>
       </div>
 
       {/* MOBILE MENU DROPDOWN */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-slate-100 p-4 space-y-4 animate-in slide-in-from-top duration-300">
+        <div className="md:hidden bg-black border-t border-gold/10 p-6 space-y-6 animate-in slide-in-from-top-4 duration-300">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-base font-bold text-slate-700 p-2"
+              className={`block text-lg font-serif italic ${
+                link.highlight ? "text-gold" : "text-white"
+              }`}
             >
               {link.name}
             </Link>
           ))}
-          <Link
-            href="/admin"
-            className="block text-xs font-bold text-slate-400 p-2 uppercase tracking-widest border-t pt-4"
-          >
-            Area Admin
-          </Link>
+          <div className="pt-6 border-t border-gold/5">
+            <Link
+              href="/admin"
+              className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Area Riservata
+            </Link>
+          </div>
         </div>
       )}
     </nav>

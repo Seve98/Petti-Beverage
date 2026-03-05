@@ -8,30 +8,29 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-slate-900 text-slate-300 pt-16 pb-8">
+    <footer className="bg-black border-t-2 border-gold text-slate-300 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Colonna 1: Brand & Bio */}
           <div className="space-y-6">
-            {/* <div className="bg-white p-2 inline-block rounded-lg">
-              <Image
-                src="/logo-petti.png"
-                alt="Logo"
-                width={150}
-                height={50}
-                className="object-contain"
-              />
-            </div> */}
+            <Image
+              src="/logo_petti.png"
+              alt="Logo"
+              width={150}
+              height={50}
+              className="object-contain"
+            />
+
             <p className="text-sm leading-relaxed opacity-80 font-inter">
               Leader nella distribuzione di bevande premium per il settore
               Ho.Re.Ca. Dal 19xx portiamo la freschezza dei migliori brand nel
               cuore della tua attività.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-blue-500 transition-colors">
+              <a href="#" className="hover:text-gold transition-colors">
                 <Facebook size={20} />
               </a>
-              <a href="#" className="hover:text-blue-500 transition-colors">
+              <a href="#" className="hover:text-gold transition-colors">
                 <Instagram size={20} />
               </a>
             </div>
@@ -76,18 +75,18 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4 font-inter text-sm">
               <li className="flex items-start gap-3">
-                <MapPin size={18} className="text-blue-500 shrink-0" />
+                <MapPin size={18} className="text-gold shrink-0" />
                 <span>
                   Via Esempio 123, <br />
                   80100 Napoli (NA)
                 </span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone size={18} className="text-blue-500 shrink-0" />
+                <Phone size={18} className="text-gold shrink-0" />
                 <span>+39 081 123 4567</span>
               </li>
               <li className="flex items-center gap-3">
-                <Mail size={18} className="text-blue-500 shrink-0" />
+                <Mail size={18} className="text-gold shrink-0" />
                 <span>ordini@pettibeverage.it</span>
               </li>
             </ul>
@@ -98,8 +97,8 @@ export default function Footer() {
             <h4 className="text-white font-jakarta font-bold mb-6 text-lg">
               Consegne
             </h4>
-            <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-              <div className="flex items-center gap-2 mb-2 text-blue-400">
+            <div className="bg-black p-4 rounded-xl border border-gold">
+              <div className="flex items-center gap-2 mb-2 text-gold">
                 <Truck size={18} />
                 <span className="font-bold text-xs uppercase tracking-wider">
                   Logistica Rapida
@@ -114,7 +113,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <hr className="border-slate-800 mb-8" />
+        <hr className="border-gold mb-8" />
 
         {/* Bottom Footer */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-50 font-inter">
