@@ -5,26 +5,44 @@ import { stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-// Inizializzazione con Service Role Key (Server-side solo)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+);
 
-const supabase =
-  supabaseUrl && supabaseServiceKey
-    ? createClient(supabaseUrl, supabaseServiceKey)
-    : null;
+// Funzione per inviare la notifica a Telegram
+async function sendTelegramNotification(orderData: any) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+
+  if (!token || !chatId) return;
+
+  const message =
+    `🍾 *NUOVO ORDINE PETTI BEVERAGE*\n\n` +
+    `👤 *Cliente:* ${orderData.name}\n` +
+    `💰 *Totale:* €${orderData.amount.toFixed(2)}\n` +
+    `📧 *Email:* ${orderData.email}\n` +
+    `📍 *Indirizzo:* ${orderData.address || "Non fornito"}\n\n` +
+    `🛒 _Controlla il pannello Supabase per i dettagli._`;
+
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: "Markdown",
+      }),
+    });
+  } catch (err) {
+    console.error("Errore invio Telegram:", err);
+  }
+}
 
 export async function POST(req: Request) {
-  if (!supabase) {
-    console.error(
-      "Configurazione Mancante: SUPABASE_SERVICE_ROLE_KEY non trovata su Vercel.",
-    );
-    return new NextResponse("Configuration Error", { status: 500 });
-  }
-
   const body = await req.text();
-  const headersList = await headers();
-  const signature = headersList.get("Stripe-Signature") as string;
+  const signature = (await headers()).get("Stripe-Signature") as string;
   let event;
 
   try {
@@ -34,51 +52,46 @@ export async function POST(req: Request) {
       process.env.STRIPE_WEBHOOK_SECRET!,
     );
   } catch (err: any) {
-    console.error(`⚠️ Webhook Signature fallita: ${err.message}`);
     return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
-  // Gestione dell'evento di pagamento completato
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as any;
 
-    // Estrazione Metadati e Dettagli Cliente
-    const rawCartItems = session.metadata?.cartItems || "[]";
-    const items = JSON.parse(rawCartItems);
-
-    const customerName = session.customer_details?.name || "Cliente Anonimo";
+    const customerName = session.customer_details?.name || "Cliente";
     const customerEmail = session.customer_details?.email;
-    const address = session.shipping_details?.address;
+    const amount = session.amount_total / 100;
+    const addressObj = session.shipping_details?.address;
+    const formattedAddress = addressObj
+      ? `${addressObj.line1}, ${addressObj.city}`
+      : null;
 
-    console.log(`Tentativo di salvataggio ordine per: ${customerEmail}`);
-
-    // INSERIMENTO NEL DATABASE
-    const { data, error } = await supabase.from("orders").insert([
+    // 1. Salvataggio su Supabase
+    const { error } = await supabase.from("orders").insert([
       {
         stripe_session_id: session.id,
         customer_email: customerEmail,
         customer_name: customerName,
-        shipping_address: address
-          ? `${address.line1}${address.line2 ? ", " + address.line2 : ""}, ${address.postal_code} ${address.city} (${address.state || ""}) ${address.country}`
-          : "Indirizzo non fornito",
-        items: items,
-        total_amount: session.amount_total / 100,
-        currency: session.currency?.toUpperCase() || "EUR", // <--- AGGIUNTO (Fondamentale!)
+        shipping_address: formattedAddress,
+        items: JSON.parse(session.metadata?.cartItems || "[]"),
+        total_amount: amount,
+        currency: session.currency?.toUpperCase() || "EUR",
         status: "PAID",
       },
     ]);
 
-    if (error) {
-      console.error("ERRORE CRITICO SUPABASE:", error.message);
-      // Restituiamo 500 così Stripe ci segnala il fallimento nei log
-      return new NextResponse(`Errore Database: ${error.message}`, {
-        status: 500,
+    // 2. Se il salvataggio è ok, invia la notifica Telegram
+    if (!error) {
+      await sendTelegramNotification({
+        name: customerName,
+        amount: amount,
+        email: customerEmail,
+        address: formattedAddress,
       });
+    } else {
+      console.error("Errore DB:", error.message);
+      return new NextResponse("DB Error", { status: 500 });
     }
-
-    console.log(
-      "✅ Ordine Petti Beverage registrato con successo nel Database!",
-    );
   }
 
   return new NextResponse("OK", { status: 200 });
