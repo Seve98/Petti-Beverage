@@ -3,6 +3,7 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import LayoutClientWrapper from "@/components/LayoutClientWrapper";
 import SplashScreen from "@/components/SplashScreen";
+import AgeModal from "@/components/AgeModal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,7 +33,10 @@ export default function RootLayout({
       >
         <SplashScreen />
         <LayoutClientWrapper>
-          <div className="min-h-screen mt-10">{children}</div>
+          <div className="min-h-screen mt-10">
+            <AgeModal />
+            {children}
+          </div>
         </LayoutClientWrapper>
       </body>
     </html>
