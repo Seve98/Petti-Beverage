@@ -3,10 +3,10 @@ import { stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-// Inizializza Supabase (assicurati di avere le ENV caricate)
+// Inizializza Supabase con Service Role
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!, // Usa la Service Role per bypassare RLS in scrittura
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 export async function POST(req: Request) {
@@ -24,11 +24,15 @@ export async function POST(req: Request) {
     return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
+  // Usiamo "as any" sulla sessione per evitare errori di tipo profondi con Stripe
   if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
+    const session = event.data.object as any;
 
-    // Estraiamo i dati dai metadata e dalla sessione
-    const items = JSON.parse(session.metadata.cartItems);
+    // ESTRAZIONE SICURA PER TYPESCRIPT
+    // Se metadata o cartItems mancano, restituiamo un array vuoto stringato per il parse
+    const rawCartItems = session.metadata?.cartItems || "[]";
+    const items = JSON.parse(rawCartItems);
+
     const customerName = session.customer_details?.name;
     const customerEmail = session.customer_details?.email;
     const address = session.shipping_details?.address;
@@ -39,7 +43,7 @@ export async function POST(req: Request) {
         stripe_session_id: session.id,
         customer_email: customerEmail,
         customer_name: customerName,
-        shipping_address: address, // Salva l'intero oggetto indirizzo
+        shipping_address: address,
         items: items,
         total_amount: session.amount_total / 100,
         status: "PAID",
