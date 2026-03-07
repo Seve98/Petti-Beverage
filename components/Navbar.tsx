@@ -1,15 +1,29 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Menu, X } from "lucide-react"; // ShoppingCart è più elegante per il lusso
+import { ShoppingCart, Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import Image from "next/image";
 
-export default function Navbar() {
-  const { cart, setIsCartOpen } = useCart(); // Usiamo lo stato globale
+// 1. Definiamo le Props per rendere felice TypeScript
+interface NavbarProps {
+  onCartClick?: () => void;
+}
+
+export default function Navbar({ onCartClick }: NavbarProps) {
+  const { cart, setIsCartOpen } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+  // Gestore del click: usa la prop se passata, altrimenti usa il context interno
+  const handleCartClick = () => {
+    if (onCartClick) {
+      onCartClick();
+    } else {
+      setIsCartOpen(true);
+    }
+  };
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -20,7 +34,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 w-full z-60 bg-black/80 backdrop-blur-lg border-b border-gold/10">
+    <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-lg border-b border-gold/10">
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
         {/* LOGO */}
         <Link href="/" className="flex items-center gap-3 group shrink-0">
@@ -60,7 +74,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setIsCartOpen(true)} // Apre la sidebar globalmente
+            onClick={handleCartClick} // Ora usa la logica sicura
             className="relative p-3 rounded-full hover:bg-gold/10 transition-all active:scale-90 group"
           >
             <ShoppingCart
