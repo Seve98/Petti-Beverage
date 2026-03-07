@@ -78,6 +78,7 @@ export async function POST(req: Request) {
       ? `${addressObj.line1}, ${addressObj.city}`
       : null;
 
+    const cartItems = JSON.parse(session.metadata?.cartItems || "[]");
     // 1. Salvataggio su Supabase
     const { error } = await supabase.from("orders").insert([
       {
@@ -85,7 +86,7 @@ export async function POST(req: Request) {
         customer_email: customerEmail,
         customer_name: customerName,
         shipping_address: formattedAddress,
-        items: JSON.parse(session.metadata?.cartItems || "[]"),
+        items: cartItems, // <--- Usiamo la variabile appena creata
         total_amount: amount,
         currency: session.currency?.toUpperCase() || "EUR",
         status: "PAID",
@@ -99,6 +100,7 @@ export async function POST(req: Request) {
         amount: amount,
         email: customerEmail,
         address: formattedAddress,
+        items: cartItems, // <--- MANCAVA QUESTA RIGA FONDAMENTALE!
       });
     } else {
       console.error("Errore DB:", error.message);
