@@ -22,6 +22,9 @@ export async function POST(req: Request) {
           unit_amount: Math.round(item.price * 100),
         },
         quantity: item.quantity,
+        shipping_address_collection: {
+          allowed_countries: ["IT"], // Specifica i paesi (es. 'IT' per Italia)
+        },
       })),
       // SPEDIZIONE SEMPRE GRATUITA
       shipping_options: [

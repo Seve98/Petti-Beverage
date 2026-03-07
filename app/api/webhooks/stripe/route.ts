@@ -58,8 +58,9 @@ export async function POST(req: Request) {
         stripe_session_id: session.id,
         customer_email: customerEmail,
         customer_name: customerName,
-        // Convertiamo l'indirizzo in stringa se la colonna nel DB è TEXT
-        shipping_address: address ? JSON.stringify(address) : null,
+        shipping_address: address
+          ? `${address.line1}${address.line2 ? ", " + address.line2 : ""}, ${address.postal_code} ${address.city} (${address.state || ""}) ${address.country}`
+          : "Indirizzo non fornito",
         items: items,
         total_amount: session.amount_total / 100,
         currency: session.currency?.toUpperCase() || "EUR", // <--- AGGIUNTO (Fondamentale!)
