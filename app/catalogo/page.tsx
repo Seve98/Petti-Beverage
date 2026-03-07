@@ -4,17 +4,17 @@ import React, { useState, useEffect, useMemo } from "react";
 import { getProducts } from "@/lib/api-products";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/types/product";
-import { SlidersHorizontal, X } from "lucide-react"; // Per un'icona filtri
+import { SlidersHorizontal, X } from "lucide-react";
 
 export default function CatalogoPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Stato unico per tutti i filtri
+  // Stato con tipi espliciti per evitare "undefined"
   const [filters, setFilters] = useState({
-    categoria: "Tutti",
-    formato: "Tutti",
-    prezzo: "Tutti", // "economico", "premium", "luxury"
+    categoria: "Tutti" as string,
+    formato: "Tutti" as string,
+    prezzo: "Tutti" as string,
   });
 
   useEffect(() => {
@@ -26,7 +26,6 @@ export default function CatalogoPage() {
     load();
   }, []);
 
-  // Logica di filtraggio combinata (useMemo ottimizza le prestazioni)
   const filtered = useMemo(() => {
     return products.filter((p) => {
       const matchCategoria =
@@ -44,21 +43,27 @@ export default function CatalogoPage() {
     });
   }, [products, filters]);
 
-  // Estrazione dinamica delle opzioni dai dati reali
-  const categorie = [
+  // CORREZIONE QUI: Assicuriamo che gli array siano di tipo string[]
+  const categorie: string[] = [
     "Tutti",
-    ...Array.from(new Set(products.map((p) => p.categoria))),
+    ...Array.from(new Set(products.map((p) => p.categoria))).filter(
+      (c): c is string => Boolean(c),
+    ),
   ];
-  const formati = [
+
+  const formati: string[] = [
     "Tutti",
-    ...Array.from(new Set(products.map((p) => p.formato).filter(Boolean))),
+    ...Array.from(new Set(products.map((p) => p.formato))).filter(
+      (f): f is string => Boolean(f),
+    ),
   ];
+
   const fascePrezzo = ["Tutti", "Sotto 25€", "25€ - 50€", "Oltre 50€"];
 
   if (loading)
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center text-gold">
-        Caricamento...
+      <div className="min-h-screen bg-black flex items-center justify-center text-gold italic uppercase tracking-widest">
+        Inizializzazione Cantina...
       </div>
     );
 
@@ -66,7 +71,7 @@ export default function CatalogoPage() {
     <main className="min-h-screen bg-black pt-32 pb-20 px-4 md:px-8 text-white">
       <div className="max-w-7xl mx-auto">
         <header className="mb-16 text-center">
-          <h1 className="text-5xl md:text-7xl font-serif gold-gradient uppercase mb-6">
+          <h1 className="text-5xl md:text-7xl font-serif gold-gradient uppercase mb-6 italic">
             La Cantina
           </h1>
           <p className="text-gold/40 uppercase tracking-[0.3em] text-xs">
@@ -74,7 +79,6 @@ export default function CatalogoPage() {
           </p>
         </header>
 
-        {/* SEZIONE FILTRI AVANZATA */}
         <div className="bg-[#0a0a0a] border border-gold/10 rounded-2xl p-6 md:p-8 mb-12 shadow-2xl">
           <div className="flex items-center gap-2 mb-8 border-b border-gold/10 pb-4">
             <SlidersHorizontal size={18} className="text-gold" />
