@@ -21,7 +21,7 @@ export const Sidebar = () => (
         <Package size={20} /> Prodotti
       </Link>
       <Link
-        href="/admin/ordini"
+        href="/admin/orders"
         className="flex items-center gap-3 p-3 hover:text-white hover:bg-white/5 rounded-lg transition-all"
       >
         <ShoppingCart size={20} /> Ordini

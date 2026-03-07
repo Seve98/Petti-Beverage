@@ -31,7 +31,9 @@ export default function RootLayout({
         className={`${jakarta.variable} ${inter.variable} antialiased bg-white text-slate-900`}
       >
         {/* <SplashScreen /> */}
-        <LayoutClientWrapper>{children}</LayoutClientWrapper>
+        <LayoutClientWrapper>
+          <div className="min-h-screen mt-10">{children}</div>
+        </LayoutClientWrapper>
       </body>
     </html>
   );
