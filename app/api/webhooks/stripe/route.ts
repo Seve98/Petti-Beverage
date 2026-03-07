@@ -1,17 +1,31 @@
+export const dynamic = "force-dynamic"; // Forza Next.js a non pre-renderizzare questa rotta
+
 import { createClient } from "@supabase/supabase-js";
 import { stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-// Inizializza Supabase con Service Role
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+// Inizializzazione sicura: evita il crash se le chiavi mancano durante il build
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const supabase =
+  supabaseUrl && supabaseServiceKey
+    ? createClient(supabaseUrl, supabaseServiceKey)
+    : null;
 
 export async function POST(req: Request) {
+  // Verifica se Supabase è stato inizializzato correttamente
+  if (!supabase) {
+    console.error(
+      "Ambiente non configurato: Supabase URL o Service Key mancanti.",
+    );
+    return new NextResponse("Configuration Error", { status: 500 });
+  }
+
   const body = await req.text();
-  const signature = (await headers()).get("Stripe-Signature") as string;
+  const headersList = await headers();
+  const signature = headersList.get("Stripe-Signature") as string;
   let event;
 
   try {
@@ -24,12 +38,9 @@ export async function POST(req: Request) {
     return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
-  // Usiamo "as any" sulla sessione per evitare errori di tipo profondi con Stripe
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as any;
 
-    // ESTRAZIONE SICURA PER TYPESCRIPT
-    // Se metadata o cartItems mancano, restituiamo un array vuoto stringato per il parse
     const rawCartItems = session.metadata?.cartItems || "[]";
     const items = JSON.parse(rawCartItems);
 
@@ -37,7 +48,6 @@ export async function POST(req: Request) {
     const customerEmail = session.customer_details?.email;
     const address = session.shipping_details?.address;
 
-    // INSERIMENTO IN SUPABASE
     const { error } = await supabase.from("orders").insert([
       {
         stripe_session_id: session.id,
