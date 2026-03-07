@@ -1,157 +1,130 @@
 "use client";
-import { X, Trash2, Plus, Minus, ArrowRight, ShoppingCart } from "lucide-react";
+import React from "react";
+import { X, ShoppingBag, Trash2, Plus, Minus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion"; // Aggiungiamo animazioni fluide
 import Image from "next/image";
+import Link from "next/link";
 
-export default function CartSidebar() {
-  // Prendiamo lo stato globale dal Context
-  const {
-    cart,
-    updateQuantity,
-    removeFromCart,
-    totalPrice,
-    isCartOpen,
-    setIsCartOpen,
-  } = useCart();
+// 1. Definiamo l'interfaccia per le Props
+interface CartSidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
+  const { cart, removeFromCart, updateQuantity, totalPrice } = useCart();
+
+  // Se non è aperto, non renderizziamo nulla per performance
+  if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
-      {isCartOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsCartOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-150"
-          />
+    <div className="fixed inset-0 z-[100] overflow-hidden">
+      {/* Overlay scuro */}
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
 
-          <motion.aside
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 z-151 h-full w-full max-w-sm bg-black border-l border-gold/20 shadow-2xl"
-          >
-            <div className="flex flex-col h-full">
-              {/* Header */}
-              <div className="p-6 border-b border-gold/20 flex justify-between items-center bg-black">
-                <div className="flex items-center gap-2">
-                  <ShoppingCart size={20} className="text-gold" />
-                  <h2 className="font-serif text-lg text-white uppercase tracking-widest">
-                    Il tuo Carrello ({cart.length})
-                  </h2>
-                </div>
+      <div className="absolute inset-y-0 right-0 max-w-full flex">
+        <div className="w-screen max-w-md bg-[#0a0a0a] border-l border-gold/10 shadow-2xl flex flex-col">
+          {/* Header */}
+          <div className="px-6 py-6 border-b border-gold/10 flex items-center justify-between">
+            <h2 className="text-xl font-serif italic text-gold flex items-center gap-2">
+              <ShoppingBag size={20} /> Il Tuo Ordine
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gold transition-colors"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          {/* Lista Prodotti */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            {cart.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-gray-500 italic">Il carrello è vuoto.</p>
                 <button
-                  onClick={() => setIsCartOpen(false)}
-                  className="p-2 text-gold hover:text-white transition-colors"
+                  onClick={onClose}
+                  className="mt-4 text-gold text-xs uppercase tracking-widest border-b border-gold/20 pb-1"
                 >
-                  <X size={24} />
+                  Torna allo shop
                 </button>
               </div>
-
-              {/* Lista Prodotti */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
-                {cart.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full text-center">
-                    <p className="text-gold/40 italic font-serif">
-                      Il tuo carrello è vuoto.
-                    </p>
-                    <button
-                      onClick={() => setIsCartOpen(false)}
-                      className="mt-4 text-gold text-xs uppercase tracking-widest hover:underline"
-                    >
-                      Esplora la collezione
-                    </button>
+            ) : (
+              cart.map((item) => (
+                <div key={item.id} className="flex gap-4 group">
+                  <div className="relative h-20 w-20 bg-white/5 rounded-lg overflow-hidden border border-white/10">
+                    <Image
+                      src={item.image || "/placeholder-bottle.png"}
+                      alt={item.name}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                ) : (
-                  cart.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex gap-4 border-b border-gold/10 pb-6 group"
-                    >
-                      {/* Miniatura Immagine */}
-                      <div className="w-20 h-20 bg-white/5 rounded overflow-hidden shrink-0 border border-gold/5">
-                        <Image
-                          src={item.image || "/placeholder.png"}
-                          alt={item.name}
-                          width={80} // 👈 Aggiungi questo
-                          height={96} // 👈 Aggiungi questo
-                          className="object-contain group-hover:scale-110 transition-transform duration-500"
-                        />
+                  <div className="flex-1">
+                    <h3 className="text-sm font-bold text-white uppercase tracking-tight">
+                      {item.name}
+                    </h3>
+                    <p className="text-xs text-gold/60 mb-2">{item.price}€</p>
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center border border-white/10 rounded-md">
+                        <button
+                          onClick={() =>
+                            updateQuantity(item.id, item.quantity - 1)
+                          }
+                          className="p-1 hover:text-gold transition-colors"
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="text-xs w-6 text-center">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() =>
+                            updateQuantity(item.id, item.quantity + 1)
+                          }
+                          className="p-1 hover:text-gold transition-colors"
+                        >
+                          <Plus size={14} />
+                        </button>
                       </div>
-
-                      {/* Info Prodotto */}
-                      <div className="flex-1 flex flex-col justify-between">
-                        <div>
-                          <h3 className="text-xs font-bold text-white uppercase tracking-tighter line-clamp-2">
-                            {item.name}
-                          </h3>
-                          <p className="text-gold font-mono text-sm mt-1">
-                            €{item.price.toFixed(2)}
-                          </p>
-                        </div>
-
-                        <div className="flex items-center justify-between mt-4">
-                          {/* Controlli Quantità - Black & Gold Style */}
-                          <div className="flex items-center border border-gold/30 rounded bg-transparent">
-                            <button
-                              onClick={() => updateQuantity(item.id, -1)}
-                              className="p-1 px-2 text-gold hover:bg-gold/10 transition-colors"
-                            >
-                              <Minus size={12} />
-                            </button>
-                            <span className="px-2 text-xs font-bold text-white w-8 text-center">
-                              {item.quantity}
-                            </span>
-                            <button
-                              onClick={() => updateQuantity(item.id, 1)}
-                              className="p-1 px-2 text-gold hover:bg-gold/10 transition-colors"
-                            >
-                              <Plus size={12} />
-                            </button>
-                          </div>
-
-                          <button
-                            onClick={() => removeFromCart(item.id)}
-                            className="text-gray-600 hover:text-red-500 p-1 transition-colors"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </div>
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-gray-600 hover:text-red-500 transition-colors"
+                      >
+                        <Trash2 size={14} />
+                      </button>
                     </div>
-                  ))
-                )}
-              </div>
-
-              {/* Footer con Totale */}
-              {cart.length > 0 && (
-                <div className="p-6 border-t border-gold/20 bg-black">
-                  <div className="flex justify-between items-center mb-6">
-                    <span className="text-gray-400 uppercase text-[10px] tracking-widest">
-                      Subtotale
-                    </span>
-                    <span className="text-2xl font-serif text-white">
-                      €{totalPrice.toFixed(2)}
-                    </span>
                   </div>
-                  <Link
-                    href="/checkout"
-                    onClick={() => setIsCartOpen(false)}
-                    className="w-full flex items-center justify-center gap-3 py-4 bg-gold text-black font-bold uppercase tracking-[0.2em] text-sm hover:bg-gold-light transition-all shadow-[0_10px_20px_rgba(212,175,55,0.2)]"
-                  >
-                    Procedi al Checkout
-                    <ArrowRight size={18} />
-                  </Link>
                 </div>
-              )}
+              ))
+            )}
+          </div>
+
+          {/* Footer con Totale e Checkout */}
+          {cart.length > 0 && (
+            <div className="p-6 border-t border-gold/10 bg-black/50">
+              <div className="flex justify-between items-center mb-6">
+                <span className="text-gray-400 uppercase text-[10px] tracking-widest font-bold">
+                  Totale parziale
+                </span>
+                <span className="text-xl font-serif text-gold">
+                  {totalPrice.toFixed(2)}€
+                </span>
+              </div>
+              <Link
+                href="/checkout"
+                onClick={onClose}
+                className="block w-full bg-gold text-black text-center py-4 rounded-xl font-bold uppercase text-xs tracking-[0.2em] hover:bg-white transition-all duration-500"
+              >
+                Procedi al pagamento
+              </Link>
             </div>
-          </motion.aside>
-        </>
-      )}
-    </AnimatePresence>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

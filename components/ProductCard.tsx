@@ -1,25 +1,27 @@
-"use client"; // Necessario per gestire il click e il context
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react"; // Icona più pulita
+import { ShoppingCart } from "lucide-react";
 import { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
 
 export default function ProductCard({ prodotto }: { prodotto: Product }) {
   const { addToCart, setIsCartOpen } = useCart();
 
-  // Funzione per aggiungere al carrello senza attivare il Link della card
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // Impedisce la navigazione alla pagina prodotto
-    e.stopPropagation(); // Evita conflitti di eventi
+    e.preventDefault();
+    e.stopPropagation();
     addToCart(prodotto);
-    setIsCartOpen(true); // Opzionale: apre la sidebar per feedback immediato
+    setIsCartOpen(true);
   };
+
+  // Definiamo un'immagine di fallback se l'URL è nullo o vuoto
+  const imageSource = prodotto.immagine_url || "/placeholder-bottle.png";
 
   return (
     <Link
-      href={`../products/${prodotto.slug}`}
+      href={`/products/${prodotto.slug}`} // Rimosso il ../ per sicurezza sui percorsi
       className="group relative flex flex-col bg-[#111] border border-gold/10 rounded-2xl overflow-hidden transition-all duration-500 hover:border-gold/40"
     >
       {/* BADGE FORMATO */}
@@ -34,17 +36,19 @@ export default function ProductCard({ prodotto }: { prodotto: Product }) {
       )}
 
       {/* Contenitore Immagine */}
-      <div className="relative aspect-3/4 w-full overflow-hidden bg-[#1a1a1a]">
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#1a1a1a]">
         {prodotto.immagine_url ? (
           <Image
-            src={prodotto.immagine_url}
-            alt={prodotto.nome}
+            src={prodotto.immagine_url} // TypeScript ora lo accetta perché controllato dal ternario
+            alt={prodotto.nome || "Prodotto Petti"}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
             className="object-contain p-4 transition-transform duration-700 group-hover:scale-110"
+            priority={false}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gold/20 text-xs">
-            NO IMAGE
+          <div className="w-full h-full flex items-center justify-center text-gold/20 text-[10px] uppercase tracking-tighter">
+            Immagine non disponibile
           </div>
         )}
       </div>
@@ -54,22 +58,21 @@ export default function ProductCard({ prodotto }: { prodotto: Product }) {
         <span className="text-[9px] text-gold/60 uppercase tracking-[0.3em] mb-1">
           {prodotto.categoria}
         </span>
-        <h3 className="text-white font-serif text-sm md:text-base font-bold uppercase line-clamp-2 min-h-12">
+        <h3 className="text-white font-serif text-sm md:text-base font-bold uppercase line-clamp-2 min-h-[3rem]">
           {prodotto.nome}
         </h3>
 
         <div className="mt-auto pt-4 flex justify-between items-center">
           <span className="text-lg font-mono text-gold font-bold">
-            €{Number(prodotto.prezzo).toFixed(2)}
+            €{Number(prodotto.prezzo || 0).toFixed(2)}
           </span>
 
-          {/* BOTTONE AGGIUNGI AL CARRELLO */}
           <button
             onClick={handleAddToCart}
             className="h-10 w-10 rounded-full border border-gold/20 flex items-center justify-center bg-black/40 text-gold transition-all duration-300 hover:bg-gold hover:text-black hover:cursor-pointer hover:scale-110 z-40"
             title="Aggiungi al carrello"
           >
-            <ShoppingCart size={18} className="" />
+            <ShoppingCart size={18} />
           </button>
         </div>
       </div>
