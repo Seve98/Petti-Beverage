@@ -17,13 +17,25 @@ async function sendTelegramNotification(orderData: any) {
 
   if (!token || !chatId) return;
 
+  // Formattiamo la lista prodotti
+  // Assumiamo che orderData.items sia un array di oggetti { name: string, quantity: number }
+  const itemsList =
+    orderData.items && orderData.items.length > 0
+      ? orderData.items
+          .map((item: any) => `📦 ${item.quantity}x *${item.name}*`)
+          .join("\n")
+      : "Nessun dettaglio prodotti trovato";
+
   const message =
-    `🍾 *NUOVO ORDINE PETTI BEVERAGE*\n\n` +
+    `🍾 *NUOVO ORDINE PETTI BEVERAGE*\n` +
+    `────────────────────\n` +
     `👤 *Cliente:* ${orderData.name}\n` +
     `💰 *Totale:* €${orderData.amount.toFixed(2)}\n` +
     `📧 *Email:* ${orderData.email}\n` +
     `📍 *Indirizzo:* ${orderData.address || "Non fornito"}\n\n` +
-    `🛒 _Controlla il pannello Supabase per i dettagli._`;
+    `🛒 *PRODOTTI ACQUISTATI:*\n${itemsList}\n` +
+    `────────────────────\n` +
+    `✅ _Ordine confermato e pagato_`;
 
   try {
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
