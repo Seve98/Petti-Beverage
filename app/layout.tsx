@@ -30,7 +30,7 @@ export default function RootLayout({
       <body
         className={`${jakarta.variable} ${inter.variable} antialiased bg-white text-slate-900`}
       >
-        {/* <SplashScreen /> */}
+        <SplashScreen />
         <LayoutClientWrapper>
           <div className="min-h-screen mt-10">{children}</div>
         </LayoutClientWrapper>
