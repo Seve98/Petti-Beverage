@@ -10,7 +10,7 @@ export default function Hero() {
         playsInline
         className="absolute inset-0 w-full h-full object-cover z-0"
       >
-        <source src="/videos/champagne.mp4" type="video/mp4" />
+        <source src="/videos/hero.mp4" type="video/mp4" />
         Il tuo browser non supporta il formato video.
       </video>
       <div className=" absolute inset-0 bg-linear-to-r from-black via-black/60 to-transparent z-10" />

@@ -4,12 +4,30 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function SplashScreen() {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(false), 3500); // Allungato un po' per godersi il video
-    return () => clearTimeout(timer);
+    setIsMounted(true);
+    const hasSeenSplash = sessionStorage.getItem("petti_splash_seen");
+
+    if (!hasSeenSplash) {
+      setIsVisible(true);
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+        sessionStorage.setItem("petti_splash_seen", "true");
+      }, 3500); // Il tuo tempo originale
+      return () => clearTimeout(timer);
+    }
   }, []);
+
+  // Se siamo sul server o ha già visto lo splash, non renderizziamo nulla
+  if (
+    !isMounted ||
+    (!isVisible && sessionStorage.getItem("petti_splash_seen"))
+  ) {
+    return null;
+  }
 
   return (
     <AnimatePresence>
@@ -25,9 +43,9 @@ export default function SplashScreen() {
               muted
               loop
               playsInline
-              className="w-full h-full object-cover opacity-50" // Opacità ridotta per il look luxury
+              className="w-full h-full object-cover opacity-50"
             >
-              <source src="../videos/video_vetrata.mp4" type="video/mp4" />
+              <source src="/videos/video_vetrata.mp4" type="video/mp4" />
             </video>
             {/* Overlay gradiente per dare profondità */}
             <div className="absolute inset-0 bg-linear-to-b from-black via-transparent to-black opacity-80" />

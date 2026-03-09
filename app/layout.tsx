@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <SplashScreen />
         <LayoutClientWrapper>
-          <div className="min-h-screen mt-10">
+          <div className="min-h-screen mt-10 bg-black">
             <AgeModal />
             {children}
           </div>

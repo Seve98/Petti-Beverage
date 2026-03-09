@@ -71,25 +71,31 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                     <div className="flex items-center gap-3">
                       <div className="flex items-center border border-white/10 rounded-md">
                         <button
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity - 1)
-                          }
+                          onClick={() => {
+                            // Se la quantità è > 1 diminuisci, altrimenti non fare nulla (o usa removeFromCart)
+                            if (item.quantity > 1) {
+                              updateQuantity(item.id, item.quantity - 1);
+                            }
+                          }}
                           className="p-1 hover:text-gold transition-colors"
                         >
                           <Minus size={14} />
                         </button>
+
                         <span className="text-xs w-6 text-center">
                           {item.quantity}
                         </span>
+
                         <button
                           onClick={() =>
                             updateQuantity(item.id, item.quantity + 1)
-                          }
+                          } // <-- QUI l'errore: devi sommare 1
                           className="p-1 hover:text-gold transition-colors"
                         >
                           <Plus size={14} />
                         </button>
                       </div>
+
                       <button
                         onClick={() => removeFromCart(item.id)}
                         className="text-gray-600 hover:text-red-500 transition-colors"
