@@ -8,8 +8,6 @@ export default async function PromozioniPage() {
 
   return (
     <main className="min-h-screen py-20">
-      {" "}
-      {/* Spazio per la Navbar */}
       <PromozioniClient allProducts={products} />
     </main>
   );

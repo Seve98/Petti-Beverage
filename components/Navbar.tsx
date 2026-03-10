@@ -31,6 +31,7 @@ export default function Navbar({ onCartClick }: NavbarProps) {
     { name: "Promozioni", href: "/promozioni", highlight: true },
     { name: "Chi Siamo", href: "/chi-siamo" },
     { name: "Contatti", href: "/contatti" },
+    { name: "Business", href: "/business" },
   ];
 
   return (
@@ -50,7 +51,7 @@ export default function Navbar({ onCartClick }: NavbarProps) {
               PETTI BEVERAGE
             </span>
             <span className="text-[9px] text-gold/80 font-bold uppercase tracking-[0.3em] leading-tight">
-              Dal 1960
+              Bevi Bene, Bevi Petti
             </span>
           </div>
         </Link>

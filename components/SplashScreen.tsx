@@ -91,7 +91,7 @@ export default function SplashScreen() {
             <div className="flex items-center gap-4 mt-4 w-full justify-center">
               <div className="h-px w-12 bg-gold/50" />
               <p className="text-gold-light text-xs tracking-[0.4em] uppercase font-light">
-                Dal 1960
+                Bevi Bene, Bevi Petti
               </p>
               <div className="h-px w-12 bg-gold/50" />
             </div>

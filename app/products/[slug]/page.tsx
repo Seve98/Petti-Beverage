@@ -152,7 +152,7 @@ export default function ProductPage() {
                   className=""
                 />
                 <span className="text-[10px] uppercase tracking-widest text-gray-400">
-                  Qualità Petti dal 1960
+                  Qualità Petti
                 </span>
               </div>
             </div>

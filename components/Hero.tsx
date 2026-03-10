@@ -50,7 +50,7 @@ export default function Hero() {
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 border-t border-white/10 pt-8">
             <div className="flex items-center gap-3 text-white">
               <Truck className="text-gold" size={24} />
-              <span className="text-sm font-medium">Consegna in 24h</span>
+              <span className="text-sm font-medium">Consegna Rapida</span>
             </div>
             <div className="flex items-center gap-3 text-white">
               <Award className="text-gold" size={24} />
