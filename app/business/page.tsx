@@ -2,6 +2,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Briefcase, Truck, Award, MessageSquare } from "lucide-react";
+import Image from "next/image";
 
 export default function BusinessPage() {
   return (
@@ -22,7 +23,16 @@ export default function BusinessPage() {
           </video>
         </div>
 
-        <div className="relative z-20 text-center px-6">
+        <div className="relative flex flex-col items-center z-20 text-center px-6">
+          <div className="relative w-40 h-40 mb-6">
+            <Image
+              src="/logo_petti.png"
+              alt="Logo"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              className="object-contain"
+            />
+          </div>
           <motion.h1
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -69,11 +79,10 @@ export default function BusinessPage() {
             <Briefcase size={32} />
           </div>
           <h3 className="text-xl font-bold uppercase tracking-tight">
-            Consulenza Sommelier
+            Etichetta per il tuo Locale
           </h3>
           <p className="text-gray-400 text-sm leading-relaxed">
-            Ti aiutiamo a comporre la tua carta dei vini per esaltare l'offerta
-            del tuo locale.
+            Ti aiutiamo a scegliere l'etichetta perfetta per il tuo locale
           </p>
         </div>
       </section>
