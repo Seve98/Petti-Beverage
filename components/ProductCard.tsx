@@ -15,7 +15,18 @@ export default function ProductCard({ prodotto }: { prodotto: Product }) {
     addToCart(prodotto);
     setIsCartOpen(true);
   };
+  const getCleanImageUrl = (url: string | undefined) => {
+    if (!url) return "/placeholder.png";
 
+    // Se l'URL non è di Supabase, ritornalo normale
+    if (!url.includes("supabase.co")) return url;
+
+    // Aggiungiamo parametri per forzare dimensione e ridimensionamento 'contain'
+    // Questo aiuta Supabase a centrare e uniformare la bottiglia nel box 3:4
+    return `${url}?width=600&height=800&resize=contain`;
+  };
+
+  const cleanImageUrl = getCleanImageUrl(prodotto.immagine_url ?? undefined);
   return (
     <Link
       href={`/products/${prodotto.slug}`}
@@ -36,11 +47,13 @@ export default function ProductCard({ prodotto }: { prodotto: Product }) {
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#1a1a1a]">
         {prodotto.immagine_url ? (
           <Image
-            src={prodotto.immagine_url}
+            src={cleanImageUrl}
             alt={prodotto.nome || "prodotto petti"}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-            className="object-contain p-4 transition-transform duration-700 group-hover:scale-110"
+            // Ho aumentato il padding (p-6) e aggiunto 'object-center'
+            // Questo costringe la bottiglia a stare al centro del box 3:4
+            className="object-contain p-6 transition-transform duration-700 group-hover:scale-110 object-center"
             priority={false}
           />
         ) : (
