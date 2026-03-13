@@ -89,7 +89,7 @@ export default function ProductCard({ prodotto }: { prodotto: Product }) {
 
         <div className="mt-auto pt-4 flex justify-between items-center">
           {/* Prezzo in Grassetto (font-black) */}
-          <span className="text-xl font-bold text-gold font-mono">
+          <span className="text-xl font-bold text-gold font-serif">
             €{Number(prodotto.prezzo || 0).toFixed(2)}
           </span>
 

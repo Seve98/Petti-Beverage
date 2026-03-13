@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import { Briefcase, Truck, Award, MessageSquare } from "lucide-react";
+import { Briefcase, Truck, Award } from "lucide-react";
 import Image from "next/image";
 
 export default function BusinessPage() {

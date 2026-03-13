@@ -1,4 +1,5 @@
 import { ArrowRight, Truck, Award, Clock } from "lucide-react";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -26,24 +27,31 @@ export default function Hero() {
           </div>
 
           <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
-            La distribuzione di{" "}
-            <span className="gold-gradient">bevande premium</span> per il tuo
-            business.
+            Il lusso alla{" "}
+            <span className="gold-gradient">portata di tutti</span>.
           </h1>
-
-          <p className="mt-6 text-lg text-slate-300 leading-relaxed">
-            Forniamo bar, ristoranti e hotel con i migliori brand sul mercato.
-            Logistica impeccabile e prezzi competitivi direttamente alla tua
-            porta.
+          <p className="mt-8 text-lg md:text-xl text-slate-300 leading-relaxed font-light">
+            Esplora la nostra selezione esclusiva dove le migliori etichette sul
+            mercato incontrano la convenienza dei prezzi stock. Che tu sia un{" "}
+            <strong>privato</strong> alla ricerca della bottiglia perfetta per
+            un'occasione speciale o un <strong> rivenditore </strong>
+            che vuole offrire il meglio ai propri clienti, qui troverai la
+            qualità che cerchi senza compromessi.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
-            <button className="cursor-pointer flex items-center justify-center gap-2 btn-custom px-8 py-4 rounded-xl font-bold transition-all transform hover:scale-105">
+            <Link
+              href="/catalogo"
+              className="cursor-pointer flex items-center justify-center gap-2 btn-custom px-8 py-4 rounded-xl font-bold transition-all transform hover:scale-105"
+            >
               Esplora il Catalogo <ArrowRight size={20} />
-            </button>
-            <button className="cursor-pointer flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-bold transition-all">
-              Richiedi Listino
-            </button>
+            </Link>
+            <Link
+              href="/business"
+              className="cursor-pointer flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-bold transition-all"
+            >
+              Esplora l&#39;Area Business
+            </Link>
           </div>
 
           {/* Icone Vantaggi */}

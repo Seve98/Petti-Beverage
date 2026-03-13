@@ -66,7 +66,7 @@ export default function PromozioniClient({
       <div className="flex flex-col md:flex-row justify-between items-end border-b border-gold/20 pb-6 mb-12 gap-6">
         <div>
           <h1 className="text-5xl font-serif italic gold-gradient uppercase">
-            Specialità della Settimana
+            Prodotti Stock della Settimana
           </h1>
           <p className="text-gray-400 text-xs tracking-widest uppercase mt-2">
             Un&#39;eccellenza selezionata per ogni categoria

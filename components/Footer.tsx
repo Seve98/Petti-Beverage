@@ -77,17 +77,17 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin size={18} className="text-gold shrink-0" />
                 <span>
-                  Via Esempio 123, <br />
-                  80100 Napoli (NA)
+                  Via Borgo San Matteo,18 <br />
+                  71036 Lucera (FG)
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-gold shrink-0" />
-                <span>+39 081 123 4567</span>
+                <span>+39 3886496737</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-gold shrink-0" />
-                <span>ordini@pettibeverage.it</span>
+                <span>pettiordini@gmail.com</span>
               </li>
             </ul>
           </div>
