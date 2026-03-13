@@ -104,9 +104,7 @@ export default function Footer() {
                   Logistica Rapida
                 </span>
               </div>
-              <p className="text-xs opacity-70 mb-4">
-                Consegniamo in 24/48h in tutta la provincia.
-              </p>
+              <p className="text-xs opacity-70 mb-4">Spediamo in 24/48h.</p>
               <p className="text-xs text-white">Lun - Ven: 08:00 - 18:00</p>
               <p className="text-xs text-white">Sab: 08:00 - 13:00</p>
             </div>

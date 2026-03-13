@@ -34,7 +34,7 @@ export default function Hero() {
             Esplora la nostra selezione esclusiva dove le migliori etichette sul
             mercato incontrano la convenienza dei prezzi stock. Che tu sia un{" "}
             <strong>privato</strong> alla ricerca della bottiglia perfetta per
-            un'occasione speciale o un <strong> rivenditore </strong>
+            un&#39;occasione speciale o un <strong> rivenditore </strong>
             che vuole offrire il meglio ai propri clienti, qui troverai la
             qualità che cerchi senza compromessi.
           </p>
