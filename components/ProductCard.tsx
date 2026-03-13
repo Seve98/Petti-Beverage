@@ -53,7 +53,7 @@ export default function ProductCard({ prodotto }: { prodotto: Product }) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
             // Ho aumentato il padding (p-6) e aggiunto 'object-center'
             // Questo costringe la bottiglia a stare al centro del box 3:4
-            className="object-contain p-6 transition-transform duration-700 group-hover:scale-110 object-center"
+            className="object-contain transition-transform duration-700 group-hover:scale-110 object-center"
             priority={false}
           />
         ) : (
