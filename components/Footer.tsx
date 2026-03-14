@@ -115,17 +115,26 @@ export default function Footer() {
 
         {/* Bottom Footer */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-50 font-inter">
-          <p>© {currentYear} Petti Pietro & Figli S.r.l. - P.IVA 0123456789</p>
+          <p>© {currentYear} Petti Pietro & Figli S.r.l. - P.IVA 03511040713</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:underline">
+            <Link
+              href="/privacy-policy"
+              className="hover:text-gold hover:underline"
+            >
               Privacy Policy
-            </a>
-            <a href="#" className="hover:underline">
-              Cookie Policy
-            </a>
-            <a href="#" className="hover:underline">
+            </Link>
+            <Link
+              href="/spedizioni"
+              className="hover:text-gold hover:underline"
+            >
+              Spedizioni
+            </Link>
+            <Link
+              href="/termini-e-condizioni"
+              className="hover:text-gold hover:underline"
+            >
               Termini e Condizioni
-            </a>
+            </Link>
           </div>
         </div>
       </div>
