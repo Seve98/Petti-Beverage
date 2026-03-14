@@ -50,6 +50,7 @@ export default function ProductCard({ prodotto }: { prodotto: Product }) {
             src={cleanImageUrl}
             alt={prodotto.nome || "prodotto petti"}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
             // Ho aumentato il padding (p-6) e aggiunto 'object-center'
             // Questo costringe la bottiglia a stare al centro del box 3:4
             className="object-fill transition-transform duration-700 group-hover:scale-110 object-center"

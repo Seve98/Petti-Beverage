@@ -5,6 +5,7 @@ import { getProducts } from "@/lib/api-products";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/types/product";
 import { SlidersHorizontal, X } from "lucide-react";
+import SearchBar from "@/components/Searchbar";
 
 export default function CatalogoPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -15,6 +16,7 @@ export default function CatalogoPage() {
     categoria: "Tutti" as string,
     formato: "Tutti" as string,
     prezzo: "Tutti" as string,
+    search: "" as string,
   });
 
   useEffect(() => {
@@ -28,6 +30,10 @@ export default function CatalogoPage() {
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
+      const searchTerm = filters.search.toLowerCase();
+      const matchSearch =
+        p.nome?.toLowerCase().includes(searchTerm) ||
+        p.categoria?.toLowerCase().includes(searchTerm);
       const matchCategoria =
         filters.categoria === "Tutti" || p.categoria === filters.categoria;
       const matchFormato =
@@ -39,7 +45,7 @@ export default function CatalogoPage() {
         matchPrezzo = p.prezzo >= 25 && p.prezzo <= 50;
       if (filters.prezzo === "Oltre 50€") matchPrezzo = p.prezzo > 50;
 
-      return matchCategoria && matchFormato && matchPrezzo;
+      return matchSearch && matchCategoria && matchFormato && matchPrezzo;
     });
   }, [products, filters]);
 
@@ -80,6 +86,13 @@ export default function CatalogoPage() {
         </header>
 
         <div className="bg-[#0a0a0a] border border-gold/10 rounded-2xl p-6 md:p-8 mb-12 shadow-2xl">
+          <div className="mb-10">
+            <SearchBar
+              value={filters.search}
+              onChange={(val) => setFilters({ ...filters, search: val })}
+              placeholder="Cerca per nome, marca o tipologia..."
+            />
+          </div>
           <div className="flex items-center gap-2 mb-8 border-b border-gold/10 pb-4">
             <SlidersHorizontal size={18} className="text-gold" />
             <h2 className="text-gold uppercase tracking-widest text-xs font-bold">
@@ -165,6 +178,7 @@ export default function CatalogoPage() {
                   categoria: "Tutti",
                   formato: "Tutti",
                   prezzo: "Tutti",
+                  search: "",
                 })
               }
               className="mt-8 text-[9px] text-gold uppercase tracking-widest flex items-center gap-2 hover:text-white transition-colors"

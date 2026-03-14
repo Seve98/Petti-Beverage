@@ -89,7 +89,7 @@ export default function ProductPage() {
                 src={product.immagine_url}
                 alt={product.nome}
                 fill
-                className="object-contain p-8 transition-transform duration-1000 group-hover:scale-110"
+                className="object-fill transition-transform duration-1000 group-hover:scale-110"
                 priority
               />
             )}
