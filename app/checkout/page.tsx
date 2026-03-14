@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   AlertCircle,
   Lock,
+  Truck,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -15,6 +16,13 @@ export default function CheckoutPage() {
   const { cart, totalPrice } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // LOGICA SPEDIZIONI
+  const sogliaGratis = 150;
+  const costoSpedizione = 6.99;
+  const isSpedizioneGratis = totalPrice >= sogliaGratis;
+  const shippingCost = isSpedizioneGratis ? 0 : costoSpedizione;
+  const finalTotal = totalPrice + shippingCost;
 
   const handlePayment = async () => {
     if (cart.length === 0) return;
@@ -25,6 +33,7 @@ export default function CheckoutPage() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        // Passiamo totalPrice o la logica di spedizione al backend
         body: JSON.stringify({ items: cart }),
       });
 
@@ -49,16 +58,37 @@ export default function CheckoutPage() {
         </Link>
 
         <div className="grid md:grid-cols-2 gap-8 items-start">
-          {/* Parte Sinistra: Messaggio di Benvenuto/Sicurezza */}
+          {/* Parte Sinistra */}
           <div className="space-y-6">
             <h1 className="text-4xl font-black italic gold-gradient uppercase tracking-tighter leading-none">
               Quasi <br /> Prossimo <br /> All&#39;Eccellenza
             </h1>
+
+            {/* PROGRESS BAR SPEDIZIONE */}
+            {!isSpedizioneGratis && cart.length > 0 && (
+              <div className="bg-gold/5 border border-gold/10 p-4 rounded-xl">
+                <p className="text-[10px] uppercase tracking-widest text-gold mb-2">
+                  Mancano{" "}
+                  <span className="font-bold">
+                    €{(sogliaGratis - totalPrice).toFixed(2)}
+                  </span>{" "}
+                  alla spedizione gratuita
+                </p>
+                <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                  <div
+                    className="bg-gold h-full transition-all duration-700"
+                    style={{ width: `${(totalPrice / sogliaGratis) * 100}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
             <p className="text-gray-400 text-sm font-light italic leading-relaxed">
               Stai per completare il tuo ordine. La transazione è gestita dai
               sistemi crittografati di Stripe per garantirti la massima
               sicurezza.
             </p>
+
             <div className="flex items-center gap-4 py-4 border-y border-gold/10">
               <div className="p-3 bg-gold/10 rounded-full text-gold">
                 <ShieldCheck size={24} />
@@ -74,13 +104,13 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Parte Destra: Riepilogo e Tasto */}
+          {/* Parte Destra */}
           <div className="border-t-2 border-gold bg-clay p-8 shadow-2xl">
             <h2 className="text-lg font-serif italic text-gold-light border-b border-gold/10 pb-4 mb-6 uppercase tracking-[0.2em]">
               Riepilogo Selezione
             </h2>
 
-            <div className="space-y-4 mb-8">
+            <div className="space-y-4 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
               {cart.map((item) => (
                 <div key={item.id} className="flex justify-between text-sm">
                   <span className="text-gray-300 font-light italic">
@@ -94,16 +124,33 @@ export default function CheckoutPage() {
             </div>
 
             <div className="space-y-3 pt-6 border-t border-gold/10 mb-8">
-              <div className="flex justify-between text-[10px] uppercase tracking-widest text-gray-500">
-                <span>Spedizione Premium</span>
-                <span className="text-gold">Gratuita</span>
+              <div className="flex justify-between text-[10px] uppercase tracking-widest">
+                <span className="text-gray-500">Subtotale</span>
+                <span className="text-gray-300">€{totalPrice.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between items-end">
+
+              <div className="flex justify-between text-[10px] uppercase tracking-widest">
+                <div className="flex items-center gap-2 text-gray-500">
+                  <Truck size={12} />
+                  <span>Spedizione</span>
+                </div>
+                <span
+                  className={
+                    isSpedizioneGratis
+                      ? "text-green-500 font-bold"
+                      : "text-gold"
+                  }
+                >
+                  {isSpedizioneGratis ? "Gratuita" : `€ ${costoSpedizione}`}
+                </span>
+              </div>
+
+              <div className="flex justify-between items-end pt-2">
                 <span className="text-xs uppercase tracking-[0.2em] font-bold text-gold/50">
                   Totale
                 </span>
                 <span className="text-3xl font-black italic gold-gradient">
-                  €{totalPrice.toFixed(2)}
+                  €{finalTotal.toFixed(2)}
                 </span>
               </div>
             </div>

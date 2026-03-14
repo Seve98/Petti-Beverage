@@ -8,7 +8,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(req: Request) {
   try {
     const { items } = await req.json();
-
+    const subtotal = items.reduce((acc: number, item: any) => {
+      return acc + Math.round(item.price * 100) * item.quantity;
+    }, 0);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       // 1. I LINE ITEMS (Solo dati del prodotto, senza spedizione qui!)
@@ -39,8 +41,11 @@ export async function POST(req: Request) {
         {
           shipping_rate_data: {
             type: "fixed_amount",
-            fixed_amount: { amount: 0, currency: "eur" },
-            display_name: "Spedizione Gratuita Petti Beverage",
+            fixed_amount: {
+              amount: subtotal >= 15000 ? 0 : 699,
+              currency: "eur",
+            },
+            display_name: "Spedizione Petti Beverage",
           },
         },
       ],
