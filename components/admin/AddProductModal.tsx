@@ -1,5 +1,6 @@
 "use client";
 import { upsertProduct } from "@/app/action/admin-action";
+import { toast } from "react-toastify";
 
 export default function AddProductModal({
   isOpen,
@@ -7,6 +8,7 @@ export default function AddProductModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
+  categorie: { nome: string }[];
 }) {
   if (!isOpen) return null;
 
@@ -16,7 +18,7 @@ export default function AddProductModal({
       onClose();
       // Qui potresti aggiungere un toast invece di un alert per un'esperienza più luxury
     } else {
-      alert("Errore: " + result.error);
+      toast("Errore: " + result.error);
     }
   }
 

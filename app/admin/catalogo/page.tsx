@@ -1,37 +1,60 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
-import { upsertProduct } from "@/app/action/admin-action";
-import Link from "next/link";
 import Image from "next/image";
+import AddProductModal from "@/components/admin/AddProductModal";
 
-export default async function AdminCatalogo() {
-  // 1. Fetch dei dati direttamente dal server
-  const { data: prodotti, error } = await supabase
-    .from("prodotti")
-    .select("*")
-    .order("creato_at", { ascending: false });
+export default function AdminCatalogo() {
+  const [prodotti, setProdotti] = useState<any[]>([]);
+  const [categorie, setCategorie] = useState<any[]>([]); // Stato per le categorie dal DB
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  if (error)
-    return (
-      <div className="text-red-500">
-        Errore nel caricamento: {error.message}
-      </div>
-    );
+  // 1. Fetch dei prodotti
+  const fetchProdotti = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("prodotti")
+      .select("*")
+      .order("creato_il", { ascending: false });
+
+    if (!error) setProdotti(data || []);
+    setLoading(false);
+  }, []);
+
+  // 2. Fetch delle categorie
+  const fetchCategorie = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("categorie")
+      .select("*")
+      .order("nome", { ascending: true });
+
+    if (!error) setCategorie(data || []);
+  }, []);
+
+  // Caricamento iniziale
+  useEffect(() => {
+    fetchProdotti();
+    fetchCategorie();
+  }, [fetchProdotti, fetchCategorie]);
 
   return (
-    <div className="min-h-screen bg-black p-4 md:p-10">
+    <div className="min-h-screen mt-20 bg-black p-4 md:p-10">
       {/* Header Sezione */}
       <div className="flex justify-between items-end mb-10 border-b border-gold/20 pb-6">
         <div>
-          <span className="text-signature text-2xl">Gestione</span>
+          <span className="text-signature text-white text-2xl">Gestione</span>
           <h1 className="text-5xl font-serif gold-gradient uppercase tracking-tighter">
             Catalogo Prodotti
           </h1>
         </div>
 
-        {/* Bottone che apre il modal (DaisyUI) */}
-        <label htmlFor="modal-prodotto" className="btn-petti cursor-pointer">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="btn-custom cursor-pointer"
+        >
           + Aggiungi Bottiglia
-        </label>
+        </button>
       </div>
 
       {/* Tabella Prodotti */}
@@ -39,157 +62,96 @@ export default async function AdminCatalogo() {
         <table className="table w-full">
           <thead className="text-gold font-serif uppercase tracking-widest text-xs">
             <tr className="border-b border-gold/20">
-              <th>Immagine</th>
+              <th className="p-4">Immagine</th>
               <th>Prodotto</th>
               <th>Categoria</th>
               <th>Prezzo</th>
               <th>Stock</th>
-              <th className="text-right">Azioni</th>
+              <th className="text-right p-4">Azioni</th>
             </tr>
           </thead>
           <tbody className="text-gray-300">
-            {prodotti?.map((p) => (
-              <tr
-                key={p.id}
-                className="border-b border-white/5 hover:bg-white/5 transition-colors"
-              >
-                <td>
-                  <div className="w-12 h-16 bg-black rounded border border-gold/10 overflow-hidden">
-                    {p.immagine_url ? (
-                      <Image
-                        src={p.immagine_url}
-                        alt={p.nome}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[10px] text-gold/40">
-                        NO IMG
-                      </div>
-                    )}
-                  </div>
-                </td>
-                <td className="font-bold text-white">{p.nome}</td>
-                <td>
-                  <span className="badge badge-outline border-gold/30 text-gold text-xs">
-                    {p.categoria}
-                  </span>
-                </td>
-                <td className="font-mono text-gold-light">
-                  €{p.prezzo.toFixed(2)}
-                </td>
-                <td>
-                  <span
-                    className={`text-xs ${p.stock < 5 ? "text-red-400" : "text-green-400"}`}
-                  >
-                    {p.stock} unità
-                  </span>
-                </td>
-                <td className="text-right">
-                  <button className="btn btn-ghost btn-xs text-gold">
-                    Modifica
-                  </button>
+            {loading ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="text-center p-10 font-serif animate-pulse"
+                >
+                  Caricamento prodotti di elite...
                 </td>
               </tr>
-            ))}
+            ) : prodotti.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="text-center p-10 text-gold/50 font-serif italic"
+                >
+                  Nessun prodotto nel catalogo.
+                </td>
+              </tr>
+            ) : (
+              prodotti.map((p) => (
+                <tr
+                  key={p.id}
+                  className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                >
+                  <td className="p-4">
+                    <div className="w-12 h-16 bg-black rounded border border-gold/10 overflow-hidden relative shadow-lg">
+                      {p.immagine_url ? (
+                        <Image
+                          src={p.immagine_url}
+                          alt={p.nome}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[10px] text-gold/40 text-center leading-tight">
+                          NO
+                          <br />
+                          IMG
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="font-bold text-white uppercase tracking-tight">
+                    {p.nome}
+                  </td>
+                  <td>
+                    <span className="badge badge-outline border-gold/30 text-gold text-[10px] px-2 py-3 uppercase tracking-wider">
+                      {p.categoria}
+                    </span>
+                  </td>
+                  <td className="font-mono text-gold-light">
+                    €{p.prezzo?.toFixed(2)}
+                  </td>
+                  <td>
+                    <span
+                      className={`text-xs font-bold ${p.stock < 5 ? "text-red-400" : "text-green-400"}`}
+                    >
+                      {p.stock} unità
+                    </span>
+                  </td>
+                  <td className="text-right p-4">
+                    <button className="btn btn-ghost btn-xs text-gold hover:bg-gold/10 transition-all">
+                      Modifica
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
 
-      {/* Modal per Inserimento (Logica DaisyUI) */}
-      <input type="checkbox" id="modal-prodotto" className="modal-toggle" />
-      <div className="modal modal-bottom sm:modal-middle">
-        <div className="modal-box bg-clay border border-gold/30">
-          <h3 className="font-serif text-2xl gold-gradient mb-6">
-            Nuovo Prodotto
-          </h3>
-
-          <form
-            action={async (formData) => {
-              "use server"; // Obbligatorio se siamo in un server component
-              await upsertProduct(formData);
-            }}
-            className="space-y-4"
-          >
-            <div className="form-control">
-              <label className="label text-xs text-gold uppercase">
-                Nome Bottiglia
-              </label>
-              <input
-                name="nome"
-                type="text"
-                placeholder="Es. Grappa Riserva Petti"
-                className="input input-bordered bg-black border-gold/20 text-white focus:border-gold"
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="form-control">
-                <label className="label text-xs text-gold uppercase">
-                  Prezzo (€)
-                </label>
-                <input
-                  name="prezzo"
-                  type="number"
-                  step="0.01"
-                  className="input input-bordered bg-black border-gold/20 text-white focus:border-gold"
-                  required
-                />
-              </div>
-              <div className="form-control">
-                <label className="label text-xs text-gold uppercase">
-                  Stock iniziale
-                </label>
-                <input
-                  name="stock"
-                  type="number"
-                  className="input input-bordered bg-black border-gold/20 text-white focus:border-gold"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="form-control">
-              <label className="label text-xs text-gold uppercase">
-                Categoria
-              </label>
-              <select
-                name="categoria"
-                className="select select-bordered bg-black border-gold/20 text-white focus:border-gold"
-              >
-                <option>Whisky</option>
-                <option>Grappa</option>
-                <option>Gin</option>
-                <option>Vino</option>
-              </select>
-            </div>
-
-            <div className="form-control">
-              <label className="label text-xs text-gold uppercase">
-                URL Immagine
-              </label>
-              <input
-                name="immagine_url"
-                type="text"
-                placeholder="https://..."
-                className="input input-bordered bg-black border-gold/20 text-white focus:border-gold"
-              />
-            </div>
-
-            <div className="modal-action">
-              <label
-                htmlFor="modal-prodotto"
-                className="btn btn-ghost text-white"
-              >
-                Annulla
-              </label>
-              <button type="submit" className="btn-petti">
-                Salva Prodotto
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+      {/* Il Modal con passaggio categorie dinamiche */}
+      <AddProductModal
+        isOpen={isModalOpen}
+        categorie={categorie}
+        onClose={() => {
+          setIsModalOpen(false);
+          fetchProdotti(); // Refresh automatico dopo l'aggiunta
+        }}
+      />
     </div>
   );
 }

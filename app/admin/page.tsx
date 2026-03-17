@@ -10,8 +10,18 @@ export const dynamic = "force-dynamic"; // Forza Next.js a non usare cache stati
 
 export default async function AdminDashboard() {
   // 1. Fetch delle statistiche
+  if (!supabaseAdmin) {
+    return (
+      <div className="p-10 text-white bg-black min-h-screen">
+        Errore: Chiave SUPABASE_SERVICE_ROLE_KEY non configurata correttamente.
+      </div>
+    );
+  }
   const stats = await getAdminStats();
-
+  const { data: categorie } = await supabaseAdmin
+    .from("categorie")
+    .select("*")
+    .order("nome");
   // 2. Controllo di sicurezza per la Service Role Key
   if (!supabaseAdmin) {
     return (
@@ -41,7 +51,7 @@ export default async function AdminDashboard() {
 
       <main className="flex-1 p-4 md:p-10 overflow-y-auto mt-10 md:mt-0">
         {/* Intestazione */}
-        <DashboardHeader />
+        <DashboardHeader categorie={categorie || []} />
 
         {/* Griglia Statistiche */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">

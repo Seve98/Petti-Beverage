@@ -4,7 +4,11 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import AddProductModal from "./AddProductModal";
 
-export default function DashboardHeader() {
+interface Props {
+  categorie: any[]; // Definiamo che le categorie devono essere passate qui
+}
+
+export default function DashboardHeader({ categorie }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -25,7 +29,13 @@ export default function DashboardHeader() {
           <Plus size={18} /> Nuovo Prodotto
         </button>
       </header>
-      <AddProductModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+
+      {/* Ora 'categorie' è disponibile perché arriva dalle props */}
+      <AddProductModal
+        categorie={categorie}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </>
   );
 }
