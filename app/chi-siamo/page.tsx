@@ -26,15 +26,12 @@ export default function ChiSiamoPage() {
             playsInline
             className="w-full h-full object-cover opacity-60 scale-105"
           >
-            <source
-              src="/presentazione/videopresentazione.mp4"
-              type="video/mp4"
-            />
+            <source src="/videos/videochisiamo.mp4" type="video/mp4" />
             {/* Fallback per browser che non supportano il video */}
             Your browser does not support the video tag.
           </video>
           {/* Overlay gradiente nero per profondità e leggibilità */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black" />
+          <div className="absolute inset-0 bg-linear-to-b from-black/80 via-transparent to-black" />
           <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
         </div>
 
@@ -88,10 +85,6 @@ export default function ChiSiamoPage() {
               fill
               className="object-cover opacity-60 grayscale hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-            <p className="absolute bottom-8 left-8 text-gold font-serif italic text-3xl">
-              La nostra eredità.
-            </p>
           </div>
         </motion.div>
 

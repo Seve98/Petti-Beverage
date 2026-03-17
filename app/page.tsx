@@ -2,6 +2,7 @@ import ProductCarousel from "@/components/CarouselProduct";
 import Hero from "@/components/Hero";
 import HomeSearchBar from "@/components/HomeSearchBar";
 import ProductCard from "@/components/ProductCard";
+import PromoBanner from "@/components/PromoBanner";
 import { getProducts } from "@/lib/api-products";
 import Link from "next/link";
 
@@ -14,7 +15,12 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-black overflow-x-hidden">
+      <div className="mt-10">
+        <PromoBanner />
+      </div>
       <Hero />
+
+      {/* --- BANNER DI LANCIO FAKE (Solo Estetico) --- */}
 
       {/* --- SEZIONE RICERCA DEDICATA --- */}
       <section className="relative py-20">
