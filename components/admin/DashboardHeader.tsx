@@ -20,7 +20,7 @@ export default function DashboardHeader() {
         </div>
         <button
           onClick={() => setIsOpen(true)}
-          className="btn-petti flex items-center gap-2"
+          className="btn-custom flex items-center gap-2"
         >
           <Plus size={18} /> Nuovo Prodotto
         </button>

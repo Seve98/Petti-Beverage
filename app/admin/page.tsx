@@ -1,65 +1,70 @@
-// app/admin/page.tsx
+import { supabaseAdmin } from "@/lib/supabase"; // CAMBIATO: Usiamo il client Admin
 import { getAdminStats } from "@/lib/dal/admin-stats";
-import { supabase } from "@/lib/supabase";
 import { Sidebar } from "@/components/admin/Sidebar";
-import { StatCard } from "@/components/admin/StatsCard";
 import DashboardHeader from "@/components/admin/DashboardHeader";
+import { StatCard } from "@/components/admin/StatsCard";
+import OrdersList from "@/components/admin/OrderList";
+
+export const revalidate = 0;
+export const dynamic = "force-dynamic"; // Forza Next.js a non usare cache statica
 
 export default async function AdminDashboard() {
-  // Fetch dati in tempo reale dal server
+  // 1. Fetch delle statistiche
   const stats = await getAdminStats();
-  const { data: recentOrders } = await supabase
-    .from("ordini")
+
+  // 2. Controllo di sicurezza per la Service Role Key
+  if (!supabaseAdmin) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center text-gold">
+        <p className="border border-gold/20 p-8 rounded-xl bg-clay">
+          Errore di configurazione: SUPABASE_SERVICE_ROLE_KEY non trovata.
+        </p>
+      </div>
+    );
+  }
+
+  // 3. Fetch degli ultimi ordini usando il client amministrativo
+  const { data: recentOrders, error } = await supabaseAdmin
+    .from("orders")
     .select("*")
     .order("created_at", { ascending: false })
-    .limit(5);
+    .limit(20);
+
+  if (error) {
+    console.error("Errore recupero ordini da Supabase:", error.message);
+  }
 
   return (
-    <div className="min-h-screen bg-black flex">
+    <div className="min-h-screen bg-black flex text-white font-sans">
+      {/* Sidebar fissa a sinistra */}
       <Sidebar />
 
-      <main className="flex-1 p-8">
-        {/* Passiamo la gestione del modal a un componente client separato */}
+      <main className="flex-1 p-4 md:p-10 overflow-y-auto mt-10 md:mt-0">
+        {/* Intestazione */}
         <DashboardHeader />
 
+        {/* Griglia Statistiche */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {stats.map((stat, i) => (
             <StatCard key={i} {...stat} />
           ))}
         </div>
 
-        {/* Tabella Ordini Reali */}
-        <div className="bg-clay border border-gold/10 rounded-xl overflow-hidden">
-          <div className="p-6 border-b border-gold/10">
-            <h2 className="font-serif text-xl text-white">
-              Ultimi Ordini Reali
-            </h2>
+        {/* Sezione Gestione Ordini */}
+        <div className="space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h2 className="font-serif text-3xl text-gold italic">
+                Gestione Ordini
+              </h2>
+              <p className="text-gray-500 text-[10px] uppercase tracking-widest mt-1">
+                Monitora e aggiorna lo stato delle spedizioni in tempo reale
+              </p>
+            </div>
           </div>
-          <table className="w-full text-left">
-            <tbody className="divide-y divide-white/5">
-              {recentOrders?.map((order) => (
-                <tr
-                  key={order.id}
-                  className="hover:bg-white/5 transition-colors"
-                >
-                  <td className="px-6 py-4 text-gold-light font-mono text-sm">
-                    #{order.id.slice(0, 8)}
-                  </td>
-                  <td className="px-6 py-4 text-white font-medium">
-                    {order.cliente_nome}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="badge badge-outline border-gold/50 text-gold text-[10px]">
-                      {order.stato}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right font-bold text-white">
-                    €{order.totale}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+          {/* Lista degli ordini (Client Component per l'interattività) */}
+          <OrdersList initialOrders={recentOrders || []} />
         </div>
       </main>
     </div>
