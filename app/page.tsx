@@ -1,12 +1,13 @@
+import ProductCarousel from "@/components/CarouselProduct";
 import Hero from "@/components/Hero";
+import HomeSearchBar from "@/components/HomeSearchBar";
 import ProductCard from "@/components/ProductCard";
 import { getProducts } from "@/lib/api-products";
 import Link from "next/link";
 
 export default async function Home() {
-  // Recuperiamo i prodotti più recenti
   const products = await getProducts({
-    limit: 4,
+    limit: 10,
     orderBy: "creato_il",
     ascending: false,
   });
@@ -15,10 +16,28 @@ export default async function Home() {
     <main className="min-h-screen bg-black overflow-x-hidden">
       <Hero />
 
-      <section className="py-24 bg-black relative">
-        {/* Decorazione di sfondo sottile */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-gold/30 to-transparent" />
+      {/* --- SEZIONE RICERCA DEDICATA --- */}
+      <section className="relative py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col items-center text-center space-y-8">
+            <div className="space-y-2">
+              <h3 className="text-gold-light font-serif italic text-2xl md:text-3xl">
+                Trova la Bottiglia ideale
+              </h3>
+              <p className="text-gray-500 text-[15px] uppercase tracking-[0.4em]">
+                Ricerca tra le etichette più prestigiose della nostra cantina
+              </p>
+            </div>
 
+            <div className="w-full max-w-xl mt-10">
+              <HomeSearchBar />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- SEZIONE ULTIMI ARRIVI --- */}
+      <section className="py-24 bg-black relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
             <div>
@@ -37,27 +56,18 @@ export default async function Home() {
               href="/catalogo"
               className="group flex items-center gap-2 text-gold text-xs uppercase tracking-widest font-bold hover:text-white transition-all duration-300"
             >
-              <p>Esplora l&#8217; intera cantina</p>
+              <p>Esplora l&#8217;intera cantina</p>
               <span className="group-hover:translate-x-1 transition-transform">
                 →
               </span>
             </Link>
           </div>
 
-          {/* Griglia Prodotti: 2 colonne su mobile, 4 su desktop */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            {products && products.length > 0 ? (
-              products.map((product) => (
-                <ProductCard key={product.id} prodotto={product} />
-              ))
-            ) : (
-              <div className="col-span-full py-20 text-center">
-                <p className="text-gray-500 font-serif italic text-lg">
-                  Stiamo aggiornando le nostre riserve. Torna presto.
-                </p>
-              </div>
-            )}
-          </div>
+          {products && products.length > 0 ? (
+            <ProductCarousel products={products} />
+          ) : (
+            <p className="text-gray-500 italic">In aggiornamento...</p>
+          )}
         </div>
       </section>
     </main>

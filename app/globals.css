@@ -3,10 +3,10 @@
 
 @theme {
   /* Definiamo i tuoi colori "Petti" */
-  --color-black: #0A0A0A;
-  --color-gold: #D4AF37;
-  --color-gold-light: #FCF6BA;
-  --color-clay: #1A1A1A;
+  --color-black: #0a0a0a;
+  --color-gold: #d4af37;
+  --color-gold-light: #fcf6ba;
+  --color-clay: #1a1a1a;
 
   /* Definiamo i font */
   --font-serif: "Playfair Display", serif;
@@ -20,7 +20,7 @@
 /* --- UTILITIES --- */
 
 @utility gold-gradient {
-  background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728);
+  background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
   background-clip: text;
   color: transparent;
 }
@@ -81,4 +81,23 @@
   padding: 0.75rem;
   color: white;
   outline: none;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+
+.pause-on-hover:hover .animate-marquee {
+  animation-play-state: paused;
 }

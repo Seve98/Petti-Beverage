@@ -15,24 +15,22 @@ export default function ProductCard({ prodotto }: { prodotto: Product }) {
     addToCart(prodotto);
     setIsCartOpen(true);
   };
+
   const getCleanImageUrl = (url: string | undefined) => {
     if (!url) return "/placeholder.png";
-
-    // Se l'URL non è di Supabase, ritornalo normale
     if (!url.includes("supabase.co")) return url;
-
-    // Aggiungiamo parametri per forzare dimensione e ridimensionamento 'contain'
-    // Questo aiuta Supabase a centrare e uniformare la bottiglia nel box 3:4
     return `${url}?width=600&height=800&resize=contain`;
   };
 
   const cleanImageUrl = getCleanImageUrl(prodotto.immagine_url ?? undefined);
+
   return (
     <Link
       href={`/products/${prodotto.slug}`}
-      className="group relative flex flex-col bg-[#111] border border-gold/10 rounded-2xl overflow-hidden transition-all duration-500 hover:border-gold/40"
+      // h-full è fondamentale per far sì che tutte le card nella riga siano alte uguali
+      className="group relative flex flex-col bg-[#111] border border-gold/10 rounded-2xl overflow-hidden transition-all duration-500 hover:border-gold/40 h-full"
     >
-      {/* BADGE FORMATO (Top Right) */}
+      {/* BADGE FORMATO */}
       {prodotto.formato && (
         <div className="absolute top-3 right-3 z-30">
           <div className="px-2 py-1 bg-black/60 backdrop-blur-md border border-gold/30 rounded-md">
@@ -44,15 +42,14 @@ export default function ProductCard({ prodotto }: { prodotto: Product }) {
       )}
 
       {/* Contenitore Immagine */}
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#1a1a1a]">
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#1a1a1a] flex-shrink-0">
         {prodotto.immagine_url ? (
           <Image
             src={cleanImageUrl}
             alt={prodotto.nome || "prodotto petti"}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-            // Ho aumentato il padding (p-6) e aggiunto 'object-center'
-            // Questo costringe la bottiglia a stare al centro del box 3:4
+            // Cambiato object-fill in object-contain per non stretchare le bottiglie
             className="object-fill transition-transform duration-700 group-hover:scale-110 object-center"
             priority={false}
           />
@@ -64,8 +61,8 @@ export default function ProductCard({ prodotto }: { prodotto: Product }) {
       </div>
 
       {/* Info Prodotto */}
-      <div className="p-5 flex flex-col flex-1">
-        {/* BADGE BEST PRICE (Nuovo) */}
+      <div className="p-5 flex flex-col flex-grow">
+        {/* BADGE BEST PRICE */}
         <div className="mb-3 inline-flex items-center gap-1.5 w-fit px-2 py-0.5 rounded-full border border-gold/20 bg-gold/5">
           <Tag size={10} className="text-gold" />
           <span className="text-[9px] font-bold text-gold uppercase tracking-[0.1em]">
@@ -77,19 +74,19 @@ export default function ProductCard({ prodotto }: { prodotto: Product }) {
           {prodotto.categoria}
         </span>
 
-        {/* Titolo in minuscolo (normal-case) */}
-        <h3 className="text-white font-serif text-sm md:text-base font-bold normal-case line-clamp-1">
+        {/* Titolo - Forzato su 1 riga per mantenere l'allineamento */}
+        <h3 className="text-white font-serif text-sm md:text-base font-bold normal-case line-clamp-1 h-[1.5em]">
           {prodotto.nome?.toUpperCase()}
         </h3>
 
-        {/* Descrizione in minuscolo (normal-case) - Aggiunta se presente nei dati */}
-        <p className="text-gray-500 text-[11px] leading-relaxed mt-2 line-clamp-2 normal-case font-light">
+        {/* Descrizione - Forzata su esattamente 2 righe con altezza minima */}
+        <p className="text-gray-500 text-[11px] leading-relaxed mt-2 line-clamp-2 normal-case font-light min-h-[2.8rem]">
           {prodotto.descrizione?.toLowerCase() ||
             "scopri la selezione esclusiva petti beverage."}
         </p>
 
-        <div className="mt-auto pt-4 flex justify-between items-center">
-          {/* Prezzo in Grassetto (font-black) */}
+        {/* Prezzo e Bottone - Spinti sempre in fondo con mt-auto */}
+        <div className="mt-auto pt-4 flex justify-between items-center border-t border-white/5">
           <span className="text-xl font-bold text-gold font-serif">
             €{Number(prodotto.prezzo || 0).toFixed(2)}
           </span>
