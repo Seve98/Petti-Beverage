@@ -16,9 +16,13 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Petti Pietro & Figli - Ingrosso Bevande",
+  title: "Petti Beverage | Ingrosso Bevande Premium a Lucera",
   description:
-    "Fornitore di bevande premium per bar, ristoranti e attività commerciali dal 1960.",
+    "Fornitore leader di bevande premium per privati e aziende dal 1960. Ampia selezione di gin, toniche e beverage di alta qualità. Drink Good, Drink Petti",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
