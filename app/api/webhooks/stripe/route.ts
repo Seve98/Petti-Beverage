@@ -71,25 +71,29 @@ export async function POST(req: Request) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as any;
 
-    const shipping = session.shipping_details;
-    const addressObj = shipping?.address;
+    const shipping =
+      session.shipping_details ||
+      session.collected_information?.shipping_details;
+
+    // Fallback sull'indirizzo del cliente se i precedenti mancano
+    const addressObj = shipping?.address || session.customer_details?.address;
 
     // Oggetto completo per il campo JSONB di Supabase
-    const fullShippingAddress = shipping
+    const fullShippingAddress = addressObj
       ? {
-          name: shipping.name || null,
-          line1: addressObj?.line1 || null,
-          line2: addressObj?.line2 || null,
-          city: addressObj?.city || null,
-          state: addressObj?.state || null,
-          postal_code: addressObj?.postal_code || null,
-          country: addressObj?.country || null,
+          name: shipping?.name || session.customer_details?.name || "Cliente",
+          line1: addressObj.line1 || null,
+          line2: addressObj.line2 || null,
+          city: addressObj.city || null,
+          state: addressObj.state || null,
+          postal_code: addressObj.postal_code || null,
+          country: addressObj.country || null,
         }
       : null;
 
     // Stringa formattata per la leggibilità su Telegram
-    const telegramAddress = shipping
-      ? `${shipping.name}\n${addressObj?.line1}${addressObj?.line2 ? " " + addressObj.line2 : ""}\n${addressObj?.postal_code} ${addressObj?.city} (${addressObj?.state})`
+    const telegramAddress = fullShippingAddress
+      ? `${fullShippingAddress.name}\n${fullShippingAddress.line1}${fullShippingAddress.line2 ? " " + fullShippingAddress.line2 : ""}\n${fullShippingAddress.postal_code} ${fullShippingAddress.city} (${fullShippingAddress.state})`
       : "Indirizzo non fornito";
 
     const customerEmail = session.customer_details?.email;
@@ -121,7 +125,10 @@ export async function POST(req: Request) {
     if (!error) {
       // Invio notifica solo se il salvataggio DB è riuscito
       await sendTelegramNotification({
-        name: shipping?.name || session.customer_details?.name || "Cliente",
+        name:
+          fullShippingAddress?.name ||
+          session.customer_details?.name ||
+          "Cliente",
         amount: amount,
         email: customerEmail,
         address: telegramAddress,
