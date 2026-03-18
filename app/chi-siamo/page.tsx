@@ -83,7 +83,7 @@ export default function ChiSiamoPage() {
               src="/chisiamo.jpeg"
               alt="Storia Petti Beverage"
               fill
-              className="object-cover opacity-60 grayscale hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100"
+              className="object-cover "
             />
           </div>
         </motion.div>
