@@ -19,4 +19,22 @@ module.exports = {
       },
     ],
   },
+  transform: async (config, path) => {
+    let priority = 0.7; // Default
+    
+    if (path === '/') {
+      priority = 1.0; // La Home è la priorità massima
+    } else if (path.startsWith('/products')) {
+      priority = 0.8; // I prodotti sono molto importanti
+    } else if (path === '/chi-siamo' || path === '/business') {
+      priority = 0.6; // Pagine informative
+    }
+
+    return {
+      loc: path,
+      changefreq: config.changefreq,
+      priority: priority,
+      lastmod: new Date().toISOString(),
+    }
+  },
 };
