@@ -1,31 +1,55 @@
 import { getProductBySlug, getProducts } from "@/lib/api-products";
-import ProductClient from "./ProductClient"; // Il tuo codice originale
+import ProductClient from "./ProductClient";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 
-// QUESTO FA TROVARE I 500 PRODOTTI A NEXT-SITEMAP
+// 1. Rendiamo il tutto statico per i 500 prodotti
 export async function generateStaticParams() {
-  const products = await getProducts(); // <--- Assicurati di avere questa funzione!
-  return products.map((p: any) => ({ slug: p.slug }));
+  const products = await getProducts();
+  if (!products) return [];
+  return products.map((p: any) => ({
+    slug: p.slug,
+  }));
 }
 
-// QUESTO FA APPARIRE IL TITOLO CORRETTO SU GOOGLE
+// 2. Metadata dinamici (con await su params per Next.js 15)
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}) {
-  const product = await getProductBySlug(params.slug);
-  if (!product) return { title: "Prodotto non trovato" };
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params; // <--- AGGIUNTO AWAIT
+  const product = await getProductBySlug(slug);
+
+  if (!product) {
+    return { title: "Prodotto non trovato | Petti Beverage" };
+  }
+
   return {
     title: `${product.nome} | Petti Beverage`,
-    description: product.descrizione,
+    description:
+      product.descrizione ||
+      `Scopri ${product.nome} su Petti Beverage. Ingrosso bevande premium a Lucera.`,
+    openGraph: {
+      title: `${product.nome} | Petti Beverage`,
+      description: product.descrizione,
+      images: [product.immagine_url],
+    },
   };
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const product = await getProductBySlug(params.slug);
-  if (!product) notFound();
+// 3. Pagina Dettaglio (con await su params)
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params; // <--- AGGIUNTO AWAIT
+  const product = await getProductBySlug(slug);
 
-  // Passiamo il prodotto già caricato dal server al tuo componente client
+  if (!product) {
+    notFound();
+  }
+
   return <ProductClient initialProduct={product} />;
 }
