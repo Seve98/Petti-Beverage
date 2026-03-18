@@ -113,15 +113,6 @@ export default function Navbar({ onCartClick }: NavbarProps) {
               {link.name}
             </Link>
           ))}
-          <div className="pt-6 border-t border-gold/5">
-            <Link
-              href="/admin"
-              className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Area Riservata
-            </Link>
-          </div>
         </div>
       )}
     </nav>
