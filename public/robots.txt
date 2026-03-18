@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://pettibeverage.com
+
+# Sitemaps
+Sitemap: https://pettibeverage.com/sitemap.xml

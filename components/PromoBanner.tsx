@@ -20,7 +20,7 @@ export default function PromoBanner() {
           className="text-black/60 animate-pulse hidden sm:block"
         />
 
-        <p className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] text-black text-center leading-none">
+        <p className="text-[11px] md:text-[13px] font-black uppercase tracking-[0.4em] text-black text-center leading-none">
           Grand Opening Event <span className="mx-2 opacity-20">|</span>
           <span className="italic">
             15% di sconto già applicato a tutto il catalogo
