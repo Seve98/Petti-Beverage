@@ -77,13 +77,13 @@ export async function POST(req: Request) {
     // Oggetto completo per il campo JSONB di Supabase
     const fullShippingAddress = shipping
       ? {
-          name: shipping.name,
-          line1: addressObj?.line1,
-          line2: addressObj?.line2,
-          city: addressObj?.city,
-          state: addressObj?.state,
-          postal_code: addressObj?.postal_code,
-          country: addressObj?.country,
+          name: shipping.name || null,
+          line1: addressObj?.line1 || null,
+          line2: addressObj?.line2 || null,
+          city: addressObj?.city || null,
+          state: addressObj?.state || null,
+          postal_code: addressObj?.postal_code || null,
+          country: addressObj?.country || null,
         }
       : null;
 
