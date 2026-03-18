@@ -60,21 +60,23 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                       src={item.image || "/placeholder-bottle.png"}
                       alt={item.name}
                       fill
-                      className="object-cover"
+                      className="object-cover object-center scale-100"
                     />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-sm font-bold text-white uppercase tracking-tight">
                       {item.name}
                     </h3>
-                    <p className="text-xs text-gold/60 mb-2">{item.price}€</p>
+                    <p className="text-sm text-gold/60 mb-2">
+                      {item.price.toFixed(2)}€
+                    </p>
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center border border-white/10 rounded-md">
+                      <div className="flex items-center border text-white border-white/10 rounded-md">
+                        {/* Pulsante MENO */}
                         <button
                           onClick={() => {
-                            // Se la quantità è > 1 diminuisci, altrimenti non fare nulla (o usa removeFromCart)
                             if (item.quantity > 1) {
-                              updateQuantity(item.id, item.quantity - 1);
+                              updateQuantity(item.id, -1); // <-- Passa solo -1
                             }
                           }}
                           className="p-1 hover:text-gold transition-colors"
@@ -86,10 +88,9 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                           {item.quantity}
                         </span>
 
+                        {/* Pulsante PIÙ */}
                         <button
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity + 1)
-                          } // <-- QUI l'errore: devi sommare 1
+                          onClick={() => updateQuantity(item.id, 1)} // <-- Passa solo 1
                           className="p-1 hover:text-gold transition-colors"
                         >
                           <Plus size={14} />

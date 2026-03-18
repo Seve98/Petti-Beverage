@@ -1,18 +1,32 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 
 export default function PromoBanner() {
+  const [mounted, setMounted] = useState(false);
+
+  // Evitiamo il mismatch caricando l'animazione solo dopo il mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return <div className="h-10 bg-gold w-full" />; // Placeholder invisibile per il server
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative w-full bg-gold py-5 px-4 overflow-hidden border-b border-black/10"
+      className="relative w-full bg-[#C5A059] py-2 px-4 overflow-hidden border-b border-black/10"
     >
-      {/* Effetto luce (Shimmer) più visibile su oro */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
+      {/* Animazione Shimmer usando classi Tailwind arbitrarie */}
+      <div
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full"
+        style={{
+          animation: "shimmer 3s infinite",
+        }}
+      />
 
       <div className="max-w-7xl mx-auto flex items-center justify-center gap-4 relative z-10">
         <Sparkles
@@ -35,16 +49,17 @@ export default function PromoBanner() {
         />
       </div>
 
-      <style jsx>{`
+      {/* Inject dei keyframes senza styled-jsx per evitare il mismatch dei nomi classi */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
         }
-      `}</style>
+      `,
+        }}
+      />
     </motion.div>
   );
 }
