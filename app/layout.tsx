@@ -20,8 +20,7 @@ export const metadata: Metadata = {
   description:
     "Fornitore leader di bevande premium per privati e aziende dal 1960. Ampia selezione di gin, toniche e beverage di alta qualità. Drink Good, Drink Petti",
   icons: {
-    // Aggiungiamo ?v=1 per forzare il browser a resettare la vecchia icona
-    icon: "/favicon.ico?v=1",
+    icon: [{ url: "/favicon.png?v=5", type: "image/png" }],
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
