@@ -85,7 +85,7 @@ export default function ProductClient({ initialProduct }: ProductClientProps) {
               {product.nome}
             </h1>
             <div className="flex items-center gap-4 mb-8">
-              <div className="text-4xl font-mono text-white font-bold">
+              <div className="text-4xl font-serif text-white font-bold">
                 €{Number(product.prezzo).toFixed(2)}
               </div>
               <span className="text-xs text-gray-500 uppercase tracking-widest border-l border-gray-800 pl-4">

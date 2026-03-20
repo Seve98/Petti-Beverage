@@ -23,7 +23,7 @@ export default function Footer() {
 
             <p className="text-sm leading-relaxed opacity-80 font-inter">
               Leader nella distribuzione di bevande premium per il settore
-              Ho.Re.Ca. Dal 19xx portiamo la freschezza dei migliori brand nel
+              Ho.Re.Ca. Dal 1960 portiamo la freschezza dei migliori brand nel
               cuore della tua attività.
             </p>
             <div className="flex gap-4">

@@ -143,7 +143,7 @@ export default function CatalogoPage({ searchParams }: PageProps) {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-3 gap-2 md:grid-cols-3 md:gap-12">
             {/* Categoria */}
             <FilterGroup
               label="Categoria"
@@ -210,7 +210,7 @@ export default function CatalogoPage({ searchParams }: PageProps) {
 
         {/* Griglia */}
         {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-20">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 md:gap-x-10 gap-y-12 md:gap-y-20">
             {filtered.map((product) => (
               <ProductCard key={product.id} prodotto={product} />
             ))}
@@ -240,11 +240,45 @@ function FilterGroup({
   onSelect: (v: string) => void;
 }) {
   return (
-    <div className="space-y-5">
-      <label className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-black">
+    <div className="space-y-2 md:space-y-5">
+      {/* Label più piccola su mobile per non rubare spazio */}
+      <label className="text-[8px] md:text-[10px] text-gray-500 uppercase tracking-[0.1em] md:tracking-[0.2em] font-black block truncate">
         {label}
       </label>
-      <div className="flex flex-wrap gap-2">
+
+      {/* MOBILE: DROPDOWN COMPATTO */}
+      <div className="relative block md:hidden">
+        <select
+          value={active}
+          onChange={(e) => onSelect(e.target.value)}
+          className="w-full bg-[#050505] border border-white/10 text-gold-light text-[9px] uppercase tracking-tighter px-2 py-3 rounded-lg appearance-none focus:outline-none focus:border-gold/50"
+        >
+          {options.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+        {/* Freccetta più piccola */}
+        <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+          <svg
+            className="w-2 h-2 text-gold/40"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="3"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* DESKTOP: BOTTONI (Resta invariato) */}
+      <div className="hidden md:flex flex-wrap gap-2">
         {options.map((opt) => (
           <button
             key={opt}
