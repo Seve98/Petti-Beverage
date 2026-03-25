@@ -19,10 +19,21 @@ export const metadata: Metadata = {
   title: "Petti Beverage | Ingrosso Bevande Premium a Lucera",
   description:
     "Fornitore leader di bevande premium per privati e aziende dal 1960. Ampia selezione di gin, toniche e beverage di alta qualità. Drink Good, Drink Petti",
+
+  // Configurazione icone pulita e completa per Google e dispositivi mobile
   icons: {
-    icon: [{ url: "/favicon.png?v=5", type: "image/png" }],
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon.ico", rel: "icon" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
+  // Collegamento al file manifest per Android
+  manifest: "/site.webmanifest",
+
   openGraph: {
     title: "Petti Beverage | Ingrosso Bevande Premium a Lucera",
     description:
@@ -50,7 +61,6 @@ export default function RootLayout({
   return (
     <html lang="it">
       <head>
-        {/* QUESTO SCRIPT DICE A GOOGLE DI SCRIVERE "Petti Beverage" INVECE DI "pettibeverage.com" */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
