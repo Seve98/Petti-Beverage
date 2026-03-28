@@ -14,25 +14,16 @@ export default async function Home() {
   });
 
   return (
+    
     <main className="min-h-screen bg-black overflow-x-hidden">
-      <div className="mt-10">
-        <PromoBanner />
-      </div>
-      <Hero />
-
-      {/* --- BANNER DI LANCIO FAKE (Solo Estetico) --- */}
-
       {/* --- SEZIONE RICERCA DEDICATA --- */}
-      <section className="relative py-20">
+      <section className="relative pt-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center text-center space-y-8">
             <div className="space-y-2">
               <h3 className="text-gold-light font-serif italic text-2xl md:text-3xl">
                 Trova la Bottiglia ideale
               </h3>
-              <p className="text-gray-500 text-[15px] uppercase tracking-[0.4em]">
-                Ricerca tra le etichette più prestigiose della nostra cantina
-              </p>
             </div>
 
             <div className="w-full max-w-xl mt-10">
@@ -41,6 +32,14 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      <div className="mt-10">
+        <PromoBanner />
+      </div>
+      <Hero />
+
+      {/* --- BANNER DI LANCIO FAKE (Solo Estetico) --- */}
+
+      
 
       {/* --- SEZIONE ULTIMI ARRIVI --- */}
       <section className="py-24 bg-black relative">
