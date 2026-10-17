@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Termini e Condizioni di Vendita",
+  description:
+    "Condizioni generali di vendita del negozio online Petti Beverage di Petti Pietro & Figli S.r.l.",
+  path: "/termini-e-condizioni",
+});
+
 export default function TerminiPage() {
   return (
     <main className="min-h-screen bg-black pt-32 pb-20 px-6 md:px-12 text-slate-400 text-sm">

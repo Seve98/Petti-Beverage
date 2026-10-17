@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Privacy Policy",
+  description:
+    "Informativa sul trattamento dei dati personali degli utenti del sito Petti Beverage.",
+  path: "/privacy-policy",
+});
+
 export default function PrivacyPage() {
   return (
     <main className="min-h-screen bg-black pt-32 pb-20 px-6 md:px-12 text-slate-400 text-sm">

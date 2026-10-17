@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Spedizioni e Consegne",
+  description:
+    "Tempi, costi e modalità di spedizione degli ordini Petti Beverage: consegna in 24/48h in tutta Italia.",
+  path: "/spedizioni",
+});
+
 export default function SpedizioniPage() {
   return (
     <main className="min-h-screen bg-black pt-32 pb-20 px-6 md:px-12 text-slate-300">

@@ -19,6 +19,8 @@ module.exports = {
       },
     ],
   },
+  // /catalogo è renderizzata a richiesta (legge ?search=), next-sitemap la salterebbe
+  additionalPaths: async (config) => [await config.transform(config, '/catalogo')],
   transform: async (config, path) => {
     let priority = 0.7; // Default
     

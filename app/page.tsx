@@ -5,6 +5,14 @@ import ProductCard from "@/components/ProductCard";
 import PromoBanner from "@/components/PromoBanner";
 import { getProducts } from "@/lib/api-products";
 import Link from "next/link";
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata({
+  description:
+    "Fornitore leader di bevande premium per privati e aziende dal 1960. Ampia selezione di gin, toniche e beverage di alta qualità. Drink Good, Drink Petti",
+  path: "/",
+});
 
 export default async function Home() {
   const products = await getProducts({

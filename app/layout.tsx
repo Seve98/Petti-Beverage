@@ -4,6 +4,14 @@ import "./globals.css";
 import LayoutClientWrapper from "@/components/LayoutClientWrapper";
 import SplashScreen from "@/components/SplashScreen";
 import AgeModal from "@/components/AgeModal";
+import {
+  DEFAULT_TITLE,
+  SITE_NAME,
+  SITE_URL,
+  jsonLd,
+  organizationJsonLd,
+  websiteJsonLd,
+} from "@/lib/seo";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,7 +24,11 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Petti Beverage | Ingrosso Bevande Premium a Lucera",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: DEFAULT_TITLE,
+    template: `%s | ${SITE_NAME}`,
+  },
   description:
     "Fornitore leader di bevande premium per privati e aziende dal 1960. Ampia selezione di gin, toniche e beverage di alta qualità. Drink Good, Drink Petti",
 
@@ -34,17 +46,17 @@ export const metadata: Metadata = {
   // Collegamento al file manifest per Android
   manifest: "/site.webmanifest",
 
+  // Default per le pagine senza Open Graph proprio (niente og:url: lo imposta ogni pagina)
   openGraph: {
-    title: "Petti Beverage | Ingrosso Bevande Premium a Lucera",
+    title: DEFAULT_TITLE,
     description:
       "Fornitore leader di bevande premium a Lucera. Drink Good, Drink Petti.",
-    url: "https://www.pettibeverage.com",
-    siteName: "Petti Beverage",
+    siteName: SITE_NAME,
     images: [
       {
-        url: "https://www.pettibeverage.com/logo_petti.png",
-        width: 1200,
-        height: 630,
+        url: "/logo_petti.png",
+        width: 585,
+        height: 427,
         alt: "Logo Petti Beverage",
       },
     ],
@@ -64,12 +76,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: "Petti Beverage",
-              url: "https://www.pettibeverage.com",
-            }),
+            __html: jsonLd([organizationJsonLd, websiteJsonLd]),
           }}
         />
       </head>
