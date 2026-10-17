@@ -8,6 +8,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 
+// Prodotti rigenerati al massimo ogni ora senza bisogno di rebuild
+export const revalidate = 3600;
+
 export const metadata: Metadata = pageMetadata({
   description:
     "Fornitore leader di bevande premium per privati e aziende dal 1960. Ampia selezione di gin, toniche e beverage di alta qualità. Drink Good, Drink Petti",
@@ -29,9 +32,9 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center text-center space-y-8">
             <div className="space-y-2">
-              <h3 className="text-gold-light font-serif italic text-2xl md:text-3xl">
+              <p className="text-gold-light font-serif italic text-2xl md:text-3xl">
                 Trova la Bottiglia ideale
-              </h3>
+              </p>
             </div>
 
             <div className="w-full max-w-xl mt-10">

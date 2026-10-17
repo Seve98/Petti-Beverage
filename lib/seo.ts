@@ -4,11 +4,11 @@ export const SITE_URL = "https://www.pettibeverage.com";
 export const SITE_NAME = "Petti Beverage";
 export const DEFAULT_TITLE = "Petti Beverage | Ingrosso Bevande Premium a Lucera";
 
-const DEFAULT_OG_IMAGE = {
-  url: "/logo_petti.png",
-  width: 585,
-  height: 427,
-  alt: "Logo Petti Beverage",
+export const DEFAULT_OG_IMAGE = {
+  url: "/og-image.jpg",
+  width: 1200,
+  height: 630,
+  alt: "Petti Beverage - Ingrosso bevande premium a Lucera",
 };
 
 /**

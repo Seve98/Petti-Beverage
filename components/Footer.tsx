@@ -15,7 +15,7 @@ export default function Footer() {
           <div className="space-y-6">
             <Image
               src="/logo_petti.png"
-              alt="Logo"
+              alt="Logo Petti Beverage"
               width={150}
               height={50}
               className="object-contain"
@@ -38,9 +38,9 @@ export default function Footer() {
 
           {/* Colonna 2: Link Rapidi */}
           <div>
-            <h4 className="text-white font-jakarta font-bold mb-6 text-lg">
+            <h2 className="text-white font-jakarta font-bold mb-6 text-lg">
               Navigazione
-            </h4>
+            </h2>
             <ul className="space-y-4 font-inter text-sm">
               <li>
                 <Link href="/" className="hover:text-white transition-colors">
@@ -70,9 +70,9 @@ export default function Footer() {
 
           {/* Colonna 3: Contatti Diretti */}
           <div>
-            <h4 className="text-white font-jakarta font-bold mb-6 text-lg">
+            <h2 className="text-white font-jakarta font-bold mb-6 text-lg">
               Contattaci
-            </h4>
+            </h2>
             <ul className="space-y-4 font-inter text-sm">
               <li className="flex items-start gap-3">
                 <MapPin size={18} className="text-gold shrink-0" />
@@ -94,9 +94,9 @@ export default function Footer() {
 
           {/* Colonna 4: Servizi & Orari */}
           <div>
-            <h4 className="text-white font-jakarta font-bold mb-6 text-lg">
+            <h2 className="text-white font-jakarta font-bold mb-6 text-lg">
               Consegne
-            </h4>
+            </h2>
             <div className="bg-black p-4 rounded-xl border border-gold">
               <div className="flex items-center gap-2 mb-2 text-gold">
                 <Truck size={18} />

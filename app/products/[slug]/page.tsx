@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { SITE_NAME, SITE_URL, jsonLd, pageMetadata } from "@/lib/seo";
 
-// 1. Rendiamo il tutto statico per i 500 prodotti
+// 1. Rendiamo il tutto statico per i 500 prodotti, rigenerato ogni ora (prezzi aggiornati)
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   const products = await getProducts();
   if (!products) return [];

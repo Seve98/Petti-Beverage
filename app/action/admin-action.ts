@@ -69,6 +69,11 @@ export async function upsertProduct(formData: FormData) {
   // Aggiorna sia il catalogo che la dashboard
   revalidatePath("/admin/catalogo");
   revalidatePath("/admin");
+  // ...e le pagine pubbliche che mostrano i prodotti
+  revalidatePath("/");
+  revalidatePath("/promozioni");
+  revalidatePath(`/products/${slug}`);
+  revalidatePath("/sitemap.xml");
 
   return { success: true };
 }

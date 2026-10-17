@@ -5,6 +5,7 @@ import LayoutClientWrapper from "@/components/LayoutClientWrapper";
 import SplashScreen from "@/components/SplashScreen";
 import AgeModal from "@/components/AgeModal";
 import {
+  DEFAULT_OG_IMAGE,
   DEFAULT_TITLE,
   SITE_NAME,
   SITE_URL,
@@ -52,16 +53,13 @@ export const metadata: Metadata = {
     description:
       "Fornitore leader di bevande premium a Lucera. Drink Good, Drink Petti.",
     siteName: SITE_NAME,
-    images: [
-      {
-        url: "/logo_petti.png",
-        width: 585,
-        height: 427,
-        alt: "Logo Petti Beverage",
-      },
-    ],
+    images: [DEFAULT_OG_IMAGE],
     locale: "it_IT",
     type: "website",
+  },
+  // X/Twitter usa titolo, descrizione e immagine dei tag Open Graph
+  twitter: {
+    card: "summary_large_image",
   },
 };
 

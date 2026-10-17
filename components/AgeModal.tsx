@@ -32,9 +32,9 @@ export default function AgeModal() {
           </span>
         </div>
 
-        <h2 className="text-2xl font-serif gold-gradient mb-4 uppercase tracking-[0.2em] font-bold">
+        <p className="text-2xl font-serif gold-gradient mb-4 uppercase tracking-[0.2em] font-bold">
           Verifica Età
-        </h2>
+        </p>
 
         <p className="text-gray-300 mb-10 text-sm leading-relaxed font-light italic">
           Benvenuto nel mondo Petti Beverage. <br />

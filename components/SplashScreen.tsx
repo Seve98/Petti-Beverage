@@ -77,16 +77,16 @@ export default function SplashScreen() {
             <div className="relative w-40 h-40 mb-6">
               <Image
                 src="/logo_petti.png"
-                alt="Logo"
+                alt="Logo Petti Beverage"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 className="object-contain"
               />
             </div>
 
-            <h2 className="text-white text-5xl md:text-7xl font-serif font-bold tracking-tighter gold-gradient text-center">
+            <p className="text-white text-5xl md:text-7xl font-serif font-bold tracking-tighter gold-gradient text-center">
               PETTI BEVERAGE
-            </h2>
+            </p>
 
             <div className="flex items-center gap-4 mt-4 w-full justify-center">
               <div className="h-px w-12 bg-gold/50" />

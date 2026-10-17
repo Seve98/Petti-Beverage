@@ -114,7 +114,7 @@ export default function ProductClient({ initialProduct }: ProductClientProps) {
                   src="/logo_petti.png"
                   width={25}
                   height={25}
-                  alt="Small logo"
+                  alt="Logo Petti Beverage"
                 />
                 <span className="text-[10px] uppercase tracking-widest text-gray-400">
                   Qualità Petti

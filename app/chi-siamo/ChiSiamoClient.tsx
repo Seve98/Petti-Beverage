@@ -77,7 +77,7 @@ export default function ChiSiamoClient() {
           <div className="relative overflow-hidden aspect-[4/5] bg-[#111] border border-gold/10">
             <Image
               src="/chisiamo.jpeg"
-              alt="Storia Petti Beverage"
+              alt="La storia di Petti Beverage, ingrosso bevande a Lucera dal 1960"
               fill
               className="object-cover"
             />
@@ -155,7 +155,7 @@ export default function ChiSiamoClient() {
           >
             <Image
               src="/magazzino/magazzino4.jpg"
-              alt="Entrata Hub"
+              alt="Ingresso del magazzino Petti Beverage a Lucera"
               fill
               className="object-cover transition-all duration-1000 group-hover:scale-105"
             />
@@ -179,7 +179,7 @@ export default function ChiSiamoClient() {
           >
             <Image
               src="/magazzino/magazzino1.jpg"
-              alt="Interno"
+              alt="Interno del magazzino Petti Beverage con scaffalature di bevande"
               fill
               className="object-cover transition-all duration-1000 group-hover:scale-105"
             />
@@ -193,7 +193,7 @@ export default function ChiSiamoClient() {
           <motion.div className="md:col-span-4 md:row-span-1 relative min-h-[250px] md:min-h-full overflow-hidden rounded-2xl border border-white/5 group">
             <Image
               src="/magazzino/magazzino5.jpg"
-              alt="Stock"
+              alt="Scorte di bottiglie e casse nel magazzino Petti Beverage"
               fill
               className="object-cover transition-all duration-1000 group-hover:scale-105"
             />
@@ -209,7 +209,7 @@ export default function ChiSiamoClient() {
           <motion.div className="md:col-span-3 md:row-span-1 relative min-h-[250px] md:min-h-full overflow-hidden rounded-2xl border border-white/5 group">
             <Image
               src="/magazzino/magazzino3.jpg"
-              alt="Operatività"
+              alt="Preparazione degli ordini nel magazzino Petti Beverage"
               fill
               className="object-cover transition-all duration-1000 group-hover:scale-105"
             />
@@ -231,7 +231,7 @@ export default function ChiSiamoClient() {
         >
           <Image
             src="/magazzino/magazzino2.jpg"
-            alt="Main View"
+            alt="Vista del magazzino Petti Beverage a Lucera"
             fill
             className="object-cover transition-all duration-1000"
           />

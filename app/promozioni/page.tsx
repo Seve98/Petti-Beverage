@@ -5,6 +5,9 @@ import { getProducts } from "@/lib/api-products";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 
+// Prodotti rigenerati al massimo ogni ora senza bisogno di rebuild
+export const revalidate = 3600;
+
 export const metadata: Metadata = pageMetadata({
   title: "Promozioni della Settimana",
   description:
