@@ -2,7 +2,15 @@ import { getProductBySlug, getProducts } from "@/lib/api-products";
 import ProductClient from "./ProductClient";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { SITE_NAME, SITE_URL, jsonLd, pageMetadata } from "@/lib/seo";
+import {
+  SITE_NAME,
+  SITE_URL,
+  jsonLd,
+  pageMetadata,
+  productBrand,
+  returnPolicyJsonLd,
+  shippingDetailsJsonLd,
+} from "@/lib/seo";
 
 // 1. Rendiamo il tutto statico per i 500 prodotti, rigenerato ogni ora (prezzi aggiornati)
 export const revalidate = 3600;
@@ -52,6 +60,7 @@ export default async function Page({
   }
 
   const url = `${SITE_URL}/products/${product.slug}`;
+  const brand = productBrand(product.nome);
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -60,6 +69,7 @@ export default async function Page({
     ...(product.immagine_url && { image: product.immagine_url }),
     ...(product.descrizione && { description: product.descrizione }),
     ...(product.categoria && { category: product.categoria }),
+    ...(brand && { brand: { "@type": "Brand", name: brand } }),
     sku: product.id,
     offers: {
       "@type": "Offer",
@@ -71,6 +81,8 @@ export default async function Page({
         : "https://schema.org/OutOfStock",
       itemCondition: "https://schema.org/NewCondition",
       seller: { "@id": `${SITE_URL}/#organization`, name: SITE_NAME },
+      shippingDetails: shippingDetailsJsonLd(product.prezzo),
+      hasMerchantReturnPolicy: returnPolicyJsonLd,
     },
   };
 
