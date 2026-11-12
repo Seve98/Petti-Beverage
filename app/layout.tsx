@@ -3,6 +3,7 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import LayoutClientWrapper from "@/components/LayoutClientWrapper";
 import SplashScreen from "@/components/SplashScreen";
+import { SCRIPT_SPLASH_VISTO, STILE_SPLASH_VISTO } from "@/lib/splash";
 import AgeModal from "@/components/AgeModal";
 import {
   DEFAULT_OG_IMAGE,
@@ -69,8 +70,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="it">
+    // suppressHydrationWarning: lo script qui sotto aggiunge data-splash-visto a <html> prima di React
+    <html lang="it" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_SPLASH_VISTO }} />
+        <style dangerouslySetInnerHTML={{ __html: STILE_SPLASH_VISTO }} />
+        {/* Senza JavaScript lo splash non si chiuderebbe mai */}
+        <noscript>
+          <style>{"#splash{display:none}"}</style>
+        </noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

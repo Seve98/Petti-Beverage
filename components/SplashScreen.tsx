@@ -1,55 +1,66 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
+import CappelloNatale from "@/components/natale/CappelloNatale";
+import Neve from "@/components/natale/Neve";
+import { isPeriodoNatalizio } from "@/lib/natale";
+import { CHIAVE_SPLASH_VISTO as CHIAVE_VISTO } from "@/lib/splash";
+
+const nessunaIscrizione = () => () => {};
 
 export default function SplashScreen() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  // Il server disegna sempre lo splash, così copre la pagina dal primo istante (niente home
+  // che lampeggia prima). A chi l'ha già visto in questa sessione lo nasconde subito lo script
+  // SCRIPT_SPLASH_VISTO in <head>, prima che la pagina venga mostrata; dopo l'idratazione qui
+  // si legge sessionStorage e il componente sparisce.
+  const giaVisto = useSyncExternalStore(
+    nessunaIscrizione,
+    () => sessionStorage.getItem(CHIAVE_VISTO) !== null,
+    () => false
+  );
+  const [chiuso, setChiuso] = useState(false);
+  const [natale] = useState(isPeriodoNatalizio);
 
   useEffect(() => {
-    setIsMounted(true);
-    const hasSeenSplash = sessionStorage.getItem("petti_splash_seen");
+    if (giaVisto) return;
+    const timer = setTimeout(() => setChiuso(true), 3500);
+    return () => clearTimeout(timer);
+  }, [giaVisto]);
 
-    if (!hasSeenSplash) {
-      setIsVisible(true);
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-        sessionStorage.setItem("petti_splash_seen", "true");
-      }, 3500); // Il tuo tempo originale
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
-  // Se siamo sul server o ha già visto lo splash, non renderizziamo nulla
-  if (
-    !isMounted ||
-    (!isVisible && sessionStorage.getItem("petti_splash_seen"))
-  ) {
-    return null;
-  }
+  if (giaVisto) return null;
 
   return (
-    <AnimatePresence>
-      {isVisible && (
+    // Segnato come visto solo a uscita finita, così l'animazione di chiusura arriva in fondo
+    <AnimatePresence onExitComplete={() => sessionStorage.setItem(CHIAVE_VISTO, "true")}>
+      {!chiuso && (
         <motion.div
+          id="splash"
           className="fixed inset-0 z-100 flex items-center justify-center overflow-hidden bg-black"
           exit={{ opacity: 0, transition: { duration: 0.8, delay: 0.5 } }}
         >
           {/* 1. IL VIDEO DELLA VETRATA (Sfondo) */}
           <div className="absolute inset-0 z-0">
             <video
+              key={natale ? "natale" : "standard"}
               autoPlay
               muted
               loop
               playsInline
-              className="w-full h-full object-cover opacity-50"
+              poster={natale ? "/splash-natale-poster.jpg" : undefined}
+              className={`w-full h-full object-cover ${natale ? "opacity-60" : "opacity-50"}`}
             >
-              <source src="/videos/video_vetrata.mp4" type="video/mp4" />
+              <source
+                src={natale ? "/videos/splash-natale.mp4" : "/videos/video_vetrata.mp4"}
+                type="video/mp4"
+              />
             </video>
             {/* Overlay gradiente per dare profondità */}
             <div className="absolute inset-0 bg-linear-to-b from-black via-transparent to-black opacity-80" />
           </div>
+
+          {/* Nevicata fitta e a fiocchi grandi: è il primo colpo d'occhio sul sito */}
+          {natale && <Neve className="absolute inset-0 z-104" densita={3.5} scala={3.2} />}
 
           {/* 2. PORTA SINISTRA */}
           <motion.div
@@ -82,9 +93,12 @@ export default function SplashScreen() {
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 className="object-contain"
               />
+              {natale && (
+                <CappelloNatale className="absolute right-1 -top-3 w-20 rotate-16 drop-shadow-[0_6px_10px_rgba(0,0,0,0.45)]" />
+              )}
             </div>
 
-            <p className="text-white text-5xl md:text-7xl font-serif font-bold tracking-tighter gold-gradient text-center">
+            <p className="text-5xl md:text-7xl font-serif font-bold tracking-tighter gold-gradient text-center">
               PETTI BEVERAGE
             </p>
 

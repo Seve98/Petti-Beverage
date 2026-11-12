@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# strumenti locali (screenshot Playwright, note di design)
+/.playwright-mcp/
+/.impeccable/

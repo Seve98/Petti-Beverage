@@ -1,4 +1,5 @@
 import { getProductBySlug, getProducts } from "@/lib/api-products";
+import { prezzoEffettivo } from "@/types/product";
 import ProductClient from "./ProductClient";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
@@ -74,14 +75,14 @@ export default async function Page({
     offers: {
       "@type": "Offer",
       url,
-      price: product.prezzo,
+      price: prezzoEffettivo(product),
       priceCurrency: "EUR",
       availability: product.attivo
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
       itemCondition: "https://schema.org/NewCondition",
       seller: { "@id": `${SITE_URL}/#organization`, name: SITE_NAME },
-      shippingDetails: shippingDetailsJsonLd(product.prezzo),
+      shippingDetails: shippingDetailsJsonLd(prezzoEffettivo(product)),
       hasMerchantReturnPolicy: returnPolicyJsonLd,
     },
   };

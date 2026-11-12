@@ -1,13 +1,42 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { supabase } from "@/lib/supabase";
+import { prezzoEffettivo } from "@/types/product";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-02-25.clover", // Usa una versione stabile se clover ti dà problemi
 });
 
+type ArticoloRichiesto = { id?: unknown; quantity?: unknown };
+
 export async function POST(req: Request) {
   try {
-    const { items } = await req.json();
+    const { items: richiesti } = await req.json();
+    if (!Array.isArray(richiesti) || richiesti.length === 0) {
+      return NextResponse.json({ error: "Carrello vuoto" }, { status: 400 });
+    }
+
+    // Prezzi e nomi letti dal database, mai dal browser: il client manda solo id e quantità.
+    const ids = (richiesti as ArticoloRichiesto[]).map((item) => String(item.id));
+    const { data: prodotti, error } = await supabase
+      .from("prodotti")
+      .select("*") // "*": funziona anche prima che esista la colonna prezzo_offerta
+      .in("id", ids)
+      .eq("attivo", true);
+    if (error) throw new Error(error.message);
+
+    const items = (richiesti as ArticoloRichiesto[]).map((item) => {
+      const prodotto = prodotti?.find((p) => p.id === String(item.id));
+      if (!prodotto) throw new Error("Prodotto non disponibile");
+      const quantity = Math.min(99, Math.max(1, Math.floor(Number(item.quantity) || 1)));
+      return {
+        name: prodotto.nome as string,
+        price: prezzoEffettivo(prodotto),
+        image: prodotto.immagine_url as string | null,
+        quantity,
+      };
+    });
+
     const subtotal = items.reduce((acc: number, item: any) => {
       return acc + Math.round(item.price * 100) * item.quantity;
     }, 0);

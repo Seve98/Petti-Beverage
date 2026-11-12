@@ -11,6 +11,8 @@ export interface Product {
   attivo: boolean;
   creato_il: string;
   formato?: string;
+  prezzo_offerta?: number | null;
+  offerta_ordine?: number | null;
 }
 
 /**
@@ -63,4 +65,24 @@ export async function getProductBySlug(slug: string) {
 
   if (error) return null;
   return data as Product;
+}
+
+/**
+ * Prodotti della vetrina offerte, nell'ordine scelto (colonna offerta_ordine).
+ * Se le colonne non esistono ancora o la query fallisce restituisce [].
+ */
+export async function getOfferte() {
+  const { data, error } = await supabase
+    .from("prodotti")
+    .select("*")
+    .eq("attivo", true)
+    .not("offerta_ordine", "is", null)
+    .order("offerta_ordine", { ascending: true });
+
+  if (error) {
+    console.error("Errore Fetch Offerte:", error.message);
+    return [];
+  }
+
+  return data as Product[];
 }

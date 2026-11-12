@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { toast } from "react-toastify";
 import { ShoppingCart } from "lucide-react";
-import { Product } from "@/types/product";
+import { Product, prezzoEffettivo } from "@/types/product";
 
 export interface CartItem {
   id: string;
@@ -47,7 +47,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         {
           id: product.id,
           name: product.nome,
-          price: product.prezzo,
+          price: prezzoEffettivo(product),
           image: product.immagine_url,
           quantity: 1,
         },

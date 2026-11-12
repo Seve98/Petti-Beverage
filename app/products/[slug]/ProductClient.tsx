@@ -4,8 +4,9 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { Product } from "@/types/product";
-import { ArrowLeft, Share2, ShieldCheck } from "lucide-react";
+import { Product, haSconto, prezzoEffettivo } from "@/types/product";
+import { ArrowLeft, Gift, Share2, ShieldCheck } from "lucide-react";
+import { ULTIMO_ORDINE_NATALE, consegnaPerNatale } from "@/lib/natale";
 import Link from "next/link";
 
 interface ProductClientProps {
@@ -85,13 +86,26 @@ export default function ProductClient({ initialProduct }: ProductClientProps) {
               {product.nome}
             </h1>
             <div className="flex items-center gap-4 mb-8">
+              {haSconto(product) && (
+                <s className="text-2xl font-serif text-gray-500">
+                  €{Number(product.prezzo).toFixed(2)}
+                </s>
+              )}
               <div className="text-4xl font-serif text-white font-bold">
-                €{Number(product.prezzo).toFixed(2)}
+                €{prezzoEffettivo(product).toFixed(2)}
               </div>
               <span className="text-xs text-gray-500 uppercase tracking-widest border-l border-gray-800 pl-4">
                 Iva Inclusa
               </span>
             </div>
+            {consegnaPerNatale() && (
+              <p className="-mt-4 mb-8 flex items-center gap-2.5 text-sm text-[#e6c35a]">
+                <Gift size={16} aria-hidden="true" className="shrink-0" />
+                <span>
+                  Ordina entro il <strong>{ULTIMO_ORDINE_NATALE}</strong>: arriva in tempo per Natale
+                </span>
+              </p>
+            )}
             <p className="text-gray-400 text-lg leading-relaxed mb-10 font-light italic border-l-2 border-gold/20 pl-6">
               {product.descrizione ||
                 "Un'eccellenza selezionata con cura da Petti Beverage."}

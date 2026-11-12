@@ -1,9 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ShoppingCart, Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import CappelloNatale from "@/components/natale/CappelloNatale";
+import BannerNatale from "@/components/natale/BannerNatale";
+import { consegnaPerNatale, isPeriodoNatalizio } from "@/lib/natale";
 
 // 1. Definiamo le Props per rendere felice TypeScript
 interface NavbarProps {
@@ -15,6 +19,20 @@ export default function Navbar({ onCartClick }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const pathname = usePathname();
+  const conCappello = pathname === "/" && isPeriodoNatalizio();
+
+  // Home di Natale: in cima comanda il video, la navbar entra solo quando si scorre.
+  const nascostaInCima = conCappello;
+  const [scorso, setScorso] = useState(false);
+  useEffect(() => {
+    if (!nascostaInCima) return;
+    const aggiorna = () => setScorso(window.scrollY > 60);
+    aggiorna();
+    window.addEventListener("scroll", aggiorna, { passive: true });
+    return () => window.removeEventListener("scroll", aggiorna);
+  }, [nascostaInCima]);
+  const nascosta = nascostaInCima && !scorso && !isMobileMenuOpen;
 
   // Gestore del click: usa la prop se passata, altrimenti usa il context interno
   const handleCartClick = () => {
@@ -34,17 +52,26 @@ export default function Navbar({ onCartClick }: NavbarProps) {
   ];
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-lg border-b border-gold/10">
+    <nav
+      className={`fixed top-0 w-full z-50 bg-black/80 backdrop-blur-lg border-b border-gold/10 transition-transform duration-500 ease-out motion-reduce:transition-none ${
+        nascosta ? "-translate-y-full focus-within:translate-y-0" : "translate-y-0"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
         {/* LOGO */}
         <Link href="/" className="flex items-center gap-3 group shrink-0">
-          <Image
-            src="/logo_petti.png"
-            alt="Logo Petti Beverage"
-            width={50}
-            height={50}
-            className="object-contain"
-          />
+          <span className="relative shrink-0">
+            <Image
+              src="/logo_petti.png"
+              alt="Logo Petti Beverage"
+              width={50}
+              height={50}
+              className="object-contain"
+            />
+            {conCappello && (
+              <CappelloNatale className="absolute -right-1 -top-4 w-8 rotate-[16deg]" />
+            )}
+          </span>
           <div className="flex flex-col">
             <span className="gold-gradient text-xl md:text-2xl font-black leading-none tracking-tighter uppercase">
               PETTI BEVERAGE
@@ -97,6 +124,8 @@ export default function Navbar({ onCartClick }: NavbarProps) {
           </button>
         </div>
       </div>
+
+      {consegnaPerNatale() && <BannerNatale />}
 
       {/* MOBILE MENU DROPDOWN */}
       {isMobileMenuOpen && (

@@ -4,7 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SearchBar from "../components/Searchbar"; // Il tuo componente originale
 
-export default function HomeSearchBar() {
+export default function HomeSearchBar({
+  placeholder = "Cosa vuoi bere oggi?",
+}: {
+  placeholder?: string;
+}) {
   const [query, setQuery] = useState("");
   const router = useRouter();
 
@@ -21,7 +25,7 @@ export default function HomeSearchBar() {
         <SearchBar
           value={query}
           onChange={setQuery}
-          placeholder="Cosa vuoi bere oggi?"
+          placeholder={placeholder}
         />
         {/* Trucco: un tasto invisibile per permettere l'invio col tasto Enter */}
         <button type="submit" className="hidden" />
