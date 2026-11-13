@@ -9,6 +9,7 @@ import stili from "./natale.module.css";
 import HeroNatale from "./HeroNatale";
 import Neve from "./Neve";
 import Ghirlanda from "./Ghirlanda";
+import CartelloSpedizione from "./CartelloSpedizione";
 import GrigliaNatale from "./GrigliaNatale";
 
 // Sovrascrive --font-serif solo dentro la home natalizia
@@ -32,6 +33,9 @@ export default function HomeNatale({ products }: { products: Product[] }) {
       <div className="relative z-10 -mt-[clamp(78px,8.5vw,138px)]">
         <Ghirlanda capovolta />
       </div>
+
+      {/* Spedizione gratuita: cartello appeso alla ghirlanda, sopra la vetrina */}
+      <CartelloSpedizione />
 
       <section
         id="offerte"

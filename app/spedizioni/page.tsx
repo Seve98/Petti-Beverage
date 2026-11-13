@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
+import { COSTO_SPEDIZIONE, SOGLIA_SPEDIZIONE_GRATIS } from "@/lib/spedizione";
 
 export const metadata: Metadata = pageMetadata({
   title: "Spedizioni e Consegne",
@@ -39,11 +40,11 @@ export default function SpedizioniPage() {
             <ul className="space-y-4">
               <li className="flex justify-between border-b border-gold/5 pb-2">
                 <span>Spedizione Standard (Italia)</span>
-                <span className="text-gold font-bold">€ 6.99</span>
+                <span className="text-gold font-bold">€ {COSTO_SPEDIZIONE.toFixed(2)}</span>
               </li>
               <li className="flex justify-between border-b border-gold/5 pb-2">
                 <span>Spedizione Gratuita</span>
-                <span className="text-gold font-bold">Sopra i € 150</span>
+                <span className="text-gold font-bold">Sopra i € {SOGLIA_SPEDIZIONE_GRATIS}</span>
               </li>
               <li className="flex justify-between border-b border-gold/5 pb-2">
                 <span>Tempi stimati</span>

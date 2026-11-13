@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { supabase } from "@/lib/supabase";
 import { prezzoEffettivo } from "@/types/product";
+import { costoSpedizione } from "@/lib/spedizione";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-02-25.clover", // Usa una versione stabile se clover ti dà problemi
@@ -71,7 +72,7 @@ export async function POST(req: Request) {
           shipping_rate_data: {
             type: "fixed_amount",
             fixed_amount: {
-              amount: subtotal >= 15000 ? 0 : 699,
+              amount: Math.round(costoSpedizione(subtotal / 100) * 100),
               currency: "eur",
             },
             display_name: "Spedizione Petti Beverage",

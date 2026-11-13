@@ -2,6 +2,7 @@
 
   import { useState } from "react";
   import { useCart } from "@/context/CartContext";
+  import { SOGLIA_SPEDIZIONE_GRATIS, costoSpedizione } from "@/lib/spedizione";
   import {
     ChevronLeft,
     Loader2,
@@ -18,10 +19,9 @@
     const [error, setError] = useState<string | null>(null);
 
     // LOGICA SPEDIZIONI
-    const sogliaGratis = 150;
-    const costoSpedizione = 6.99;
-    const isSpedizioneGratis = totalPrice >= sogliaGratis;
-    const shippingCost = isSpedizioneGratis ? 0 : costoSpedizione;
+    const sogliaGratis = SOGLIA_SPEDIZIONE_GRATIS;
+    const shippingCost = costoSpedizione(totalPrice);
+    const isSpedizioneGratis = shippingCost === 0;
     const finalTotal = totalPrice + shippingCost;
 
     const handlePayment = async () => {

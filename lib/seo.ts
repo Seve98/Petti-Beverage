@@ -190,16 +190,14 @@ export function productBrand(nome: string): string | undefined {
   return BRANDS.find(([key]) => normalized.includes(key))?.[1];
 }
 
-// Valori allineati a /spedizioni e app/api/checkout/route.ts
-const SHIPPING_COST = 6.99;
-const FREE_SHIPPING_THRESHOLD = 150;
+import { costoSpedizione } from "@/lib/spedizione";
 
 export function shippingDetailsJsonLd(prezzo: number) {
   return {
     "@type": "OfferShippingDetails",
     shippingRate: {
       "@type": "MonetaryAmount",
-      value: prezzo >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST,
+      value: costoSpedizione(prezzo),
       currency: "EUR",
     },
     shippingDestination: {
